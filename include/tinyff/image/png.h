@@ -24,6 +24,6 @@ typedef struct {
 } ff_png_ctx;
 
 ff_result ff_png_isvalid(FILE *file);
-ff_png_ctx *ff_open_png(const char *filepath);
+ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx);
 
 #endif

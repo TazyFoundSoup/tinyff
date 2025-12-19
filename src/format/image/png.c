@@ -19,18 +19,18 @@ ff_result ff_png_isvalid(FILE *file)
     return FF_RESULT_OK;
 }
 
-ff_png_ctx *ff_open_png(const char *filepath) {
+ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx) {
     // Validate
     
     ff_png_ctx ctx;
     ctx.raw = fopen(filepath, "rb");
 
     if (!ctx.raw) {
-        return NULL;
+        return FF_RESULT_ERROR_READ_FILE_FAILURE;
     }
 
     if (ff_png_isvalid(ctx.raw) != FF_RESULT_OK) {
-        return NULL;
+        return ff_png_isvalid(ctx.raw);
     }
 
     // TODO: Parse
