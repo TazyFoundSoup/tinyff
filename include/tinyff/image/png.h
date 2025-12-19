@@ -38,6 +38,8 @@ typedef enum {
     // There are more,
     // but these ones will be
     // enough for now
+
+    FF_PNG_CHUNK_TYPE_UNKNOWN,
 } ff_png_chunk_type;
 
 

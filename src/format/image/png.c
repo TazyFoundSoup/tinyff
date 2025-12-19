@@ -55,8 +55,15 @@ ff_result ff_next_chunk(FILE *file, ff_png_chunk **out_chunk) {
     }
 
     // Get the big endian value of the type buffer
-    // It needs to be mapped to the enum though
-    uint32_t chunk_type = get_big_endian(type_buffer);
+    uint32_t chunk_type_raw = get_big_endian(type_buffer);
+
+    ff_png_chunk_type chunk_type;
+
+    if (memcmp(chunk_type_raw, "IHDR", 4)) chunk_type = FF_PNG_CHUNK_TYPE_IHDR;
+    else if (memcmp(chunk_type_raw, "IDAT", 4)) chunk_type = FF_PNG_CHUNK_TYPE_IDAT;
+    else if (memcmp(chunk_type_raw, "IEND", 4)) chunk_type = FF_PNG_CHUNK_TYPE_IEND;
+    else if (memcmp(chunk_type_raw, "PLTE", 4)) chunk_type = FF_PNG_CHUNK_TYPE_PLTE;
+    else chunk_type = FF_PNG_CHUNK_TYPE_UNKNOWN;
 
     // 3. Read data (data_chunk_length bytes)
     uint32_t *data_buffer = (uint32_t *)malloc(data_chunk_length * sizeof(ff_byte));
