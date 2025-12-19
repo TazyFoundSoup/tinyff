@@ -59,7 +59,7 @@ ff_result ff_next_chunk(FILE *file, ff_png_chunk **out_chunk) {
     uint32_t chunk_type = get_big_endian(type_buffer);
 
     // 3. Read data (data_chunk_length bytes)
-    uint32_t *data_buffer = (uint32_t)malloc(data_chunk_length * sizeof(ff_byte));
+    uint32_t *data_buffer = (uint32_t *)malloc(data_chunk_length * sizeof(ff_byte));
 
     if (fread(data_buffer, sizeof(ff_byte), data_chunk_length, file) != data_chunk_length) {
         free(data_buffer);
