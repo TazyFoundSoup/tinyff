@@ -55,6 +55,12 @@ typedef struct {
  * 
  * Enumerates the different types of PNG chunks.
  * 
+ * @details
+ * - FF_PNG_CHUNK_TYPE_IHDR: Image Header Chunk
+ * - FF_PNG_CHUNK_TYPE_PLTE: Palette Chunk
+ * - FF_PNG_CHUNK_TYPE_IDAT: Image Data Chunk
+ * - FF_PNG_CHUNK_TYPE_IEND: Image End Chunk
+ * 
  * @see ff_png_chunk
  */
 typedef enum {
