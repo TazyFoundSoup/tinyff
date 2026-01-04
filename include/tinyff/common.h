@@ -5,10 +5,11 @@
 
 #include <stdint.h>
 
-// Human readable number types
-// NOTE: The only reason I created these was so
-// that debugging will be easier
-typedef uint8_t ff_byte;
+// Flags
+typedef bool ff_flag;
+
+#define FF_ENABLE   true
+#define FF_DISABLE  false
 
 // Functions
 

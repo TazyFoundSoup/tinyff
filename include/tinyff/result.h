@@ -2,7 +2,14 @@
 #define RESULT_H
 
 typedef enum {
+    // -- SUCCESS -- 
     FF_RESULT_OK = 0,
+
+    // -- WARNINGS --
+    FF_RESULT_WARN_DEBUG_DISABLED,
+    FF_RESULT_WARN_NO_IMPL,
+
+    // -- ERRORS --
 
     // File
     FF_RESULT_ERROR_INVALID_FILE_SIGNITURE,

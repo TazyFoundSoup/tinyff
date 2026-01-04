@@ -38,7 +38,7 @@ typedef struct {
 
 // Chunk handling
 
-typedef (*ff_png_chunk_handler_ptr)(uint8_t *data, size_t len, ff_png_ctx* ctx);
+typedef (*ff_png_chunk_handler_ptr)(uint8_t *buf, size_t len, ff_png_ctx* ctx);
 
 typedef struct {
     const char *type;
@@ -54,7 +54,17 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {NULL, NULL} // Terminator
 }; 
 
-void ff_png_header_handler(uint8_t *data, size_t len, ff_png_ctx* ctx);
+// Handler declarations
+// Massive W.I.P
+
+// Required by definition
+void ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IHDR
+void ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
+void ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
+
+// PLTE is a funny one
+// Its only required for indexed color types
+
 
 ff_result ff_png_isvalid(FILE *file);
 ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx);
