@@ -28,31 +28,35 @@ typedef struct {
 } ff_png_ctx;
 
 
-
-typedef enum {
-    FF_PNG_CHUNK_TYPE_IHDR,
-    FF_PNG_CHUNK_TYPE_PLTE,
-    FF_PNG_CHUNK_TYPE_IDAT,
-    FF_PNG_CHUNK_TYPE_IEND,
-
-    // There are more,
-    // but these ones will be
-    // enough for now
-
-    FF_PNG_CHUNK_TYPE_UNKNOWN,
-} ff_png_chunk_type;
-
-
 typedef struct {
     uint32_t length;
-    ff_png_chunk_type type;
+    const char *type;
     uint32_t *data; // length bytes (maximum is uint32_t)
     uint32_t crc;
 } ff_png_chunk;
 
 
+// Chunk handling
+
+typedef (*ff_png_chunk_handler_ptr)(uint8_t *data, size_t len, ff_png_ctx* ctx);
+
+typedef struct {
+    const char *type;
+    ff_png_chunk_handler_ptr handler;
+} ff_png_chunk_handler;
+
+const ff_png_chunk_handler ff_png_chunk_handlers[] = {
+    {"IHDR", NULL},
+    {"IDAT", NULL},
+    {"IEND", NULL},
+
+
+    {NULL, NULL} // Terminator
+}; 
+
+void ff_png_header_handler(uint8_t *data, size_t len, ff_png_ctx* ctx);
+
 ff_result ff_png_isvalid(FILE *file);
 ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx);
-ff_result ff_next_chunk(FILE *file, ff_png_chunk **out_chunk);
 
 #endif

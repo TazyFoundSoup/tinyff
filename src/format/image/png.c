@@ -1,6 +1,8 @@
 #include "tinyff/image/png.h"
 #include "png.h"
 
+
+
 ff_result ff_png_isvalid(FILE *file)
 {
     char raw_sig[8];
@@ -31,67 +33,24 @@ ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx) {
         return ff_png_isvalid(ctx.raw);
     }
 
-    // TODO: Parse
+    // This is a heavy W.I.P
+    
 }
 
-ff_result ff_next_chunk(FILE *file, ff_png_chunk **out_chunk) {
-    // 1. Read length (4 bytes): We have to read the first 4 bytes to know how many bytes to read for data
-    uint32_t length_buffer;
+void ff_png_header_handler(uint8_t *data, size_t len, ff_png_ctx *ctx)
+{
+    if (len != 13) return; // Invalid length
+    printf("Width:              %d\n", get_big_endian(data));
+    printf("Height:             %d\n", get_big_endian(data + 4));
+    printf("Bit depth:          %d\n", (unsigned char)data[8]);
+    printf("Color type:         %d\n", (unsigned char)data[9]);
+    printf("Compression method: %d\n", (unsigned char)data[10]);
+    printf("Filter method:      %d\n", (unsigned char)data[11]);
+    printf("Interlace method:   %d\n", (unsigned char)data[12]);
 
-    if (fread(&length_buffer, sizeof(sizeof(ff_byte) * 4), 1, file) != 1) {
-        return FF_RESULT_ERROR_READ_FILE_FAILURE;
-    }
-
-    // Get the big endian value of the length buffer
-    uint32_t data_chunk_length = get_big_endian(length_buffer);
-
-    // 2. Read type (ditto)
-    // (we are really just doing the same as before and we don't have to move any positions cause
-    //  thank god, FILE can already do that, *ascends*)
-    uint32_t type_buffer;
-
-    if (fread(&type_buffer, sizeof(sizeof(ff_byte) * 4), 1, file) != 1) {
-        return FF_RESULT_ERROR_READ_FILE_FAILURE;
-    }
-
-    // Get the big endian value of the type buffer
-    uint32_t chunk_type_raw = get_big_endian(type_buffer);
-
-    ff_png_chunk_type chunk_type;
-
-    if (memcmp(chunk_type_raw, "IHDR", 4)) chunk_type = FF_PNG_CHUNK_TYPE_IHDR;
-    else if (memcmp(chunk_type_raw, "IDAT", 4)) chunk_type = FF_PNG_CHUNK_TYPE_IDAT;
-    else if (memcmp(chunk_type_raw, "IEND", 4)) chunk_type = FF_PNG_CHUNK_TYPE_IEND;
-    else if (memcmp(chunk_type_raw, "PLTE", 4)) chunk_type = FF_PNG_CHUNK_TYPE_PLTE;
-    else chunk_type = FF_PNG_CHUNK_TYPE_UNKNOWN;
-
-    // 3. Read data (data_chunk_length bytes)
-    uint32_t *data_buffer = (uint32_t *)malloc(data_chunk_length * sizeof(ff_byte));
-
-    if (fread(data_buffer, sizeof(ff_byte), data_chunk_length, file) != data_chunk_length) {
-        free(data_buffer);
-        return FF_RESULT_ERROR_READ_FILE_FAILURE;
-    }
-
-    // 4. Read CRC (4 bytes)
-    // However, I don't think we need to use the data right now
-    // so we can just read and store it
-    uint32_t crc_buffer;
-
-    if (fread(&crc_buffer, sizeof(sizeof(ff_byte) * 4), 1, file) != 1) {
-        free(data_buffer);
-        return FF_RESULT_ERROR_READ_FILE_FAILURE;
-    }
-
-    uint16_t crc = get_big_endian(crc_buffer);
-
-    // 5. Create a chunk struct and return it
-    ff_png_chunk *out = (ff_png_chunk *)malloc(sizeof(ff_png_chunk));
-    out->length = data_chunk_length;
-    out->type = chunk_type;
-    out->data = data_buffer;
-    out->crc = crc;
-    *out_chunk = out;
-
-    return FF_RESULT_OK;
+    // Store in context
+    ctx->width = get_big_endian(data);
+    ctx->height = get_big_endian(data + 4);
+    ctx->bit_depth = (unsigned char)data[8];
+    ctx->color_type = (unsigned char)data[9];
 }
