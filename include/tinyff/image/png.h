@@ -46,9 +46,9 @@ typedef struct {
 } ff_png_chunk_handler;
 
 const ff_png_chunk_handler ff_png_chunk_handlers[] = {
-    {"IHDR", NULL},
-    {"IDAT", NULL},
-    {"IEND", NULL},
+    {"IHDR", ff_png_header_handler},
+    {"IDAT", ff_png_data_handler},
+    {"IEND", ff_png_end_handler},
 
 
     {NULL, NULL} // Terminator

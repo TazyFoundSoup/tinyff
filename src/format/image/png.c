@@ -55,13 +55,15 @@ ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx)
     return FF_RESULT_OK;
 }
 
-void ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+// Handlers
+
+ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: IHDR chunk received (len=%zu)\n", len);
 
     if (len != 13) {
         ff_dprintf("png: invalid IHDR length\n");
-        return;
+        return FF_RESULT_ERROR_INVALID_FILE;
     }
 
     uint32_t w = get_big_endian(buf);
@@ -81,4 +83,24 @@ void ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     ctx->color_type = buf[9];
 
     ff_dprintf("png: IHDR stored in context\n");
+
+    return FF_RESULT_OK;
+}
+
+ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+{
+    ff_dprintf("png: IDAT chunk received (len=%zu)\n", len);
+    
+    // For now, compression handling is not implemented
+    // and instead will assume data is uncompressed
+
+    ff_dprintf("png: IDAT handler WIP - data is assumed uncompressed\n");
+    ff_dprintf("png: IDAT handler WIP - expect undefined behavior\n");
+
+    // We will need to loop over all the scanlines and apply filters
+    // But im too lazy to do that right now
+    // TODO implement
+    
+
+    return FF_RESULT_WARN_NO_IMPL;
 }
