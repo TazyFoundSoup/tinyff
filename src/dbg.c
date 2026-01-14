@@ -4,6 +4,12 @@ ff_result ff_set_debug_stream(FILE *stream)
 {
     intff_debug_stream = stream;
     intff_debug_enabled = (stream != NULL);
+
+    ff_dprintf("tinyff 0.1.0 debug stream\n");
+    ff_dprintf("For more information, visit\n");
+    ff_dprintf("https://github.com/TazyFoundSoup/tinyff\n");
+    ff_dprintf("------------------------------\n");
+
     return FF_RESULT_OK;
 }
 
