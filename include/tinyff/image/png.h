@@ -17,13 +17,29 @@ static const unsigned char PNG_SIGNATURE[8] = {
 
 
 typedef struct {
+    
+    // Raw file handle
     FILE *raw;
+
+    // Image dimensions
     uint32_t width;
     uint32_t height;
+
+    // Color information
     uint8_t bit_depth;
     uint8_t color_type;
-    uint8_t *pixels;
-    size_t count_pixels;
+
+    // Image data
+    //
+    // It's weird because theres actually multiple ways to store it
+    // we need to be able to have the same fields to hold the data
+    // or have two seperate fields and a flag pointing to which one is actually
+    // being used sorta because of palette vs direct color
+    // so until i find a better way than holding this crappy project together with duct tape
+    // im just gonna use two fields and a flag
+    // but again with bit depths and color types this can get really messy really fast
+    // and i have NO idea what what type direct color data should be stored as.
+    // god... i hate png
     bool valid;
 } ff_png_ctx;
 
@@ -49,6 +65,9 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {"IHDR", ff_png_header_handler},
     {"IDAT", ff_png_data_handler},
     {"IEND", ff_png_end_handler},
+    {"PLTE", ff_png_palette_handler},   
+
+    // From now on, the handlers will be for ancillary chunks
 
 
     {NULL, NULL} // Terminator
@@ -58,9 +77,10 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
 // Massive W.I.P
 
 // Required by definition
-void ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IHDR
-void ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
-void ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
+ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IHDR
+ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // PLTE
+ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
+ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
 
 // PLTE is a funny one
 // Its only required for indexed color types

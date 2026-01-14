@@ -1,5 +1,6 @@
 #include "tinyff/image/png.h"
 #include "tinyff/dbg.h"
+#include "png.h"
 
 ff_result ff_png_isvalid(FILE *file)
 {
@@ -87,6 +88,18 @@ ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     return FF_RESULT_OK;
 }
 
+ff_result ff_png_chunk_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+{
+    ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
+    
+    uint16_t num_entries = len / 3;
+    ff_dprintf("png: PLTE contains %u palette entries\n", num_entries);
+
+    
+
+    return FF_RESULT_WARN_NO_IMPL;
+}   
+
 ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: IDAT chunk received (len=%zu)\n", len);
@@ -103,4 +116,12 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     
 
     return FF_RESULT_WARN_NO_IMPL;
+}
+
+ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+{
+    ff_dprintf("png: IEND chunk received (len=%zu)\n", len);
+    ff_dprintf("png: all chunks received\n");
+
+    return FF_RESULT_OK;
 }
