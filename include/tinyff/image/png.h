@@ -9,6 +9,7 @@
 
 #include "tinyff/result.h"
 #include "tinyff/common.h"
+#include "tinyff/stream.h"
 
 
 static const unsigned char PNG_SIGNATURE[8] = {
@@ -22,8 +23,8 @@ typedef enum {
 } ff_png_mode;
 
 typedef struct {
-    // Raw file handle
-    FILE *raw;
+    // Raw stream handle
+    ff_stream *raw;
 
     // Image dimensions
     uint32_t width;
@@ -69,6 +70,16 @@ typedef struct {
     ff_png_chunk_handler_ptr handler;
 } ff_png_chunk_handler;
 
+// Handler declarations
+// Massive W.I.P
+
+// Required by definition
+ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IHDR
+ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // PLTE
+ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
+ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
+
+
 const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {"IHDR", ff_png_header_handler},
     {"IDAT", ff_png_data_handler},
@@ -81,20 +92,10 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {NULL, NULL} // Terminator
 }; 
 
-// Handler declarations
-// Massive W.I.P
-
-// Required by definition
-ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IHDR
-ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // PLTE
-ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
-ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
-
-// PLTE is a funny one
-// Its only required for indexed color types
 
 
-ff_result ff_png_isvalid(FILE *file);
-ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx);
+
+ff_result ff_png_isvalid(ff_stream *stream);
+ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx);
 
 #endif

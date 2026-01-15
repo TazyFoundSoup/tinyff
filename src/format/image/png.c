@@ -2,12 +2,12 @@
 #include "tinyff/dbg.h"
 #include "png.h"
 
-ff_result ff_png_isvalid(FILE *file)
+ff_result ff_png_isvalid(ff_stream *stream)
 {
     ff_dprintf("png: validating signature\n");
 
     char raw_sig[8];
-    if (fread(raw_sig, 1, 8, file) != 8) {
+    if (stream->read(raw_sig, 8, stream->user) != 8) {
         ff_dprintf("png: failed to read signature bytes\n");
         return FF_RESULT_ERROR_INVALID_FILE;
     }
@@ -20,37 +20,47 @@ ff_result ff_png_isvalid(FILE *file)
 
     if (memcmp(raw_sig, PNG_SIGNATURE, 8) != 0) {
         ff_dprintf("png: signature mismatch\n");
-        return FF_RESULT_ERROR_INVALID_FILE_SIGNITURE;
+        return FF_RESULT_ERROR_INVALID_PNG_SIGNITURE;
     }
 
     ff_dprintf("png: signature valid\n");
     return FF_RESULT_OK;
 }
 
-ff_result ff_open_png(const char *filepath, ff_png_ctx **out_ctx)
+ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
 {
-    ff_dprintf("png: opening file '%s'\n", filepath);
 
-    ff_png_ctx ctx;
-    ctx.raw = fopen(filepath, "rb");
+    ff_png_ctx *ctx = malloc(sizeof(ff_png_ctx));
+    if (!ctx) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
 
-    if (!ctx.raw) {
-        ff_dprintf("png: fopen failed\n");
+    // Init
+    memset(ctx, 0, sizeof(*ctx));
+    ctx->image_mode = FF_PNG_MODE_NONE;
+    ctx->raw = stream;
+    ctx->last_error = FF_RESULT_OK;
+
+
+    if (ctx->raw->read == NULL) {
+        ff_dprintf("png: stream failed to read\n");
+        free(ctx);
+        ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
         return FF_RESULT_ERROR_READ_FILE_FAILURE;
     }
 
-    ff_dprintf("png: file opened successfully\n");
+    ff_dprintf("png: stream read successfully\n");
 
-    ff_result res = ff_png_isvalid(ctx.raw);
+    ff_result res = ff_png_isvalid(ctx->raw);
     if (res != FF_RESULT_OK) {
         ff_dprintf("png: validation failed (%d)\n", res);
-        fclose(ctx.raw);
+        free(ctx);
+        ctx->last_error = res;
         return res;
     }
 
     ff_dprintf("png: validation passed\n");
+    ctx->valid = true;
 
-    *out_ctx = NULL;
+    *out_ctx = ctx;
     ff_dprintf("png: open_png reached WIP end\n");
 
     return FF_RESULT_OK;
@@ -88,7 +98,7 @@ ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     return FF_RESULT_OK;
 }
 
-ff_result ff_png_chunk_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
     
