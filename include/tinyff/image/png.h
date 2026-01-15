@@ -15,9 +15,13 @@ static const unsigned char PNG_SIGNATURE[8] = {
     0x89, 'P', 'N', 'G', 0x0D, 0x0A, 0x1A, 0x0A
 };
 
+typedef enum {
+    FF_PNG_MODE_NONE = 0,
+    FF_PNG_MODE_DIRECT_COLOR, // pixels
+    FF_PNG_MODE_PALETTE       // palette
+} ff_png_mode;
 
 typedef struct {
-    
     // Raw file handle
     FILE *raw;
 
@@ -30,17 +34,21 @@ typedef struct {
     uint8_t color_type;
 
     // Image data
-    //
-    // It's weird because theres actually multiple ways to store it
-    // we need to be able to have the same fields to hold the data
-    // or have two seperate fields and a flag pointing to which one is actually
-    // being used sorta because of palette vs direct color
-    // so until i find a better way than holding this crappy project together with duct tape
-    // im just gonna use two fields and a flag
-    // but again with bit depths and color types this can get really messy really fast
-    // and i have NO idea what what type direct color data should be stored as.
-    // god... i hate png
+    
+    ff_png_mode image_mode;
+
+    union {
+        uint8_t* pixels;
+        uint8_t* imap; // Map of all the indices defines in PLTE
+    } data;
+
+    // Palette (if needed; can be left NULL if it's direct color)
+    uint8_t* palette;
+    uint32_t palette_size;
+
     bool valid;
+    ff_result last_error;
+
 } ff_png_ctx;
 
 
