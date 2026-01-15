@@ -53,14 +53,6 @@ typedef struct {
 } ff_png_ctx;
 
 
-typedef struct {
-    uint32_t length;
-    const char *type;
-    uint32_t *data; // length bytes (maximum is uint32_t)
-    uint32_t crc;
-} ff_png_chunk;
-
-
 // Chunk handling
 
 typedef (*ff_png_chunk_handler_ptr)(uint8_t *buf, size_t len, ff_png_ctx* ctx);
