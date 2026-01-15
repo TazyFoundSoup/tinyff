@@ -102,12 +102,27 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
     
+    if (len % 3 != 0) {
+        ff_dprintf("png: invalid PLTE length\n");
+        return FF_RESULT_ERROR_INVALID_FILE;
+    }
+
     uint16_t num_entries = len / 3;
     ff_dprintf("png: PLTE contains %u palette entries\n", num_entries);
-
     
-
-    return FF_RESULT_WARN_NO_IMPL;
+    ctx->palette_size = num_entries;
+    ctx->palette = malloc(len);
+    if (!ctx->palette) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    
+    for (uint16_t i = 0; i < num_entries; i++) {
+        // There's 4 bytes per entry just because if there's
+        // a tRNS chunk later, we can just fill in the alpha values
+        ctx->palette[i * 4 + 0] = buf[i * 3 + 0]; // R
+        ctx->palette[i * 4 + 1] = buf[i * 3 + 1]; // R
+        ctx->palette[i * 4 + 2] = buf[i * 3 + 2]; // R
+    }
+    
+    return FF_RESULT_OK;
 }   
 
 ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
