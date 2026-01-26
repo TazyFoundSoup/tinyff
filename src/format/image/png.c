@@ -129,16 +129,23 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: IDAT chunk received (len=%zu)\n", len);
     
-    // For now, compression handling is not implemented
-    // and instead will assume data is uncompressed
+    // Update: Now I got tinf integrated, I can actually implement this
 
-    ff_dprintf("png: IDAT handler WIP - data is assumed uncompressed\n");
-    ff_dprintf("png: IDAT handler WIP - expect undefined behavior\n");
-
-    // We will need to loop over all the scanlines and apply filters
-    // But im too lazy to do that right now
-    // TODO implement
+    uint8_t *uncompressed_data = NULL;
     
+    // Getting the size is weird cause it could the sample count
+    // could be different based on color type and bit depth
+    // TODO: Calculate properly
+    size_t uncompressed_size = ctx->width * ctx->height; // WIP based size
+
+    uncompressed_data = malloc(uncompressed_size);
+
+    if (!uncompressed_data) {
+        ff_dprintf("png: failed to allocate memory for uncompressed data\n");
+        return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    }
+    
+    tinf_uncompress(uncompressed_data, uncompressed_size, buf, len);
 
     return FF_RESULT_WARN_NO_IMPL;
 }
