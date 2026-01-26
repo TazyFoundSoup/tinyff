@@ -55,6 +55,27 @@ typedef struct {
 
 } ff_png_ctx;
 
+// Small BpP helper function
+
+static inline uint16_t ff_png_bpp(ff_png_ctx *ctx)
+{
+    int16_t byte_depth = ctx->bit_depth / 8;
+    switch (ctx->color_type) {
+        case 0: // Grayscale
+            return byte_depth * 1; // Gray
+        case 2: // Truecolor
+            return byte_depth * 3; // R, G, B
+        case 3: // Indexed-color
+            return byte_depth * 1; // Index
+        case 4: // Grayscale with alpha
+            return byte_depth * 2; // Gray w/ alpha
+        case 6: // Truecolor with alpha
+            return byte_depth * 4; // R, G, B w/ alpha
+        default:
+            return 0; // damn, you corrupt
+    }
+}
+
 
 // Chunk handling
 
