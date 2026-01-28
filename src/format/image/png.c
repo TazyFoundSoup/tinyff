@@ -118,8 +118,8 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
         // There's 4 bytes per entry just because if there's
         // a tRNS chunk later, we can just fill in the alpha values
         ctx->palette[i * 4 + 0] = buf[i * 3 + 0]; // R
-        ctx->palette[i * 4 + 1] = buf[i * 3 + 1]; // R
-        ctx->palette[i * 4 + 2] = buf[i * 3 + 2]; // R
+        ctx->palette[i * 4 + 1] = buf[i * 3 + 1]; // G
+        ctx->palette[i * 4 + 2] = buf[i * 3 + 2]; // B
     }
     
     return FF_RESULT_OK;
@@ -128,14 +128,11 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: IDAT chunk received (len=%zu)\n", len);
-    
-    // Update: Now I got tinf integrated, I can actually implement this
 
     uint8_t *uncompressed_data = NULL;
     
     // Getting the size is weird cause it could the sample count
     // could be different based on color type and bit depth
-    // Update: Now we have a bpp helper function
     size_t uncompressed_size = ctx->width * ctx->height * ff_png_bpp(ctx);
 
     uncompressed_data = malloc(uncompressed_size);
