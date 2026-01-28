@@ -16,7 +16,12 @@ typedef enum {
     FF_RESULT_ERROR_READ_FILE_FAILURE,
 
     // Media specific
-    FF_RESULT_ERROR_INVALID_PNG_SIGNITURE, // PNG
+    
+    // PNG
+    FF_RESULT_ERROR_INVALID_PNG_SIGNITURE,
+
+    // Archive (more general archives terms)
+    FF_RESULT_ERROR_DECOMPRESSION_FAILURE,
 
     // Memory
     FF_RESULT_ERROR_MEMORY_ALLOCATION,
