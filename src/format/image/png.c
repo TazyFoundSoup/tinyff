@@ -135,8 +135,8 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     
     // Getting the size is weird cause it could the sample count
     // could be different based on color type and bit depth
-    // TODO: Calculate properly
-    size_t uncompressed_size = ctx->width * ctx->height; // WIP based size
+    // Update: Now we have a bpp helper function
+    size_t uncompressed_size = ctx->width * ctx->height * ff_png_bpp(ctx);
 
     uncompressed_data = malloc(uncompressed_size);
 
@@ -145,7 +145,11 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
     
-    tinf_uncompress(uncompressed_data, uncompressed_size, buf, len);
+    if (tinf_uncompress(uncompressed_data, uncompressed_size, buf, len) != TINF_OK) {
+        ff_dprintf("png: failed to uncompress IDAT data\n");
+        free(uncompressed_data);
+        return FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
+    }
 
     return FF_RESULT_WARN_NO_IMPL;
 }
