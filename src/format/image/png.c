@@ -162,7 +162,20 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     // Now I am very inexperienced so I'm doing what I think is right
     // TODO: Review this code later
 
+    // Iterate over every scanline
+    for (int iline = 0; iline < ctx->height; iline++) {
+        uint8_t line_filter = buf[0];
+
+        // WIP: i have to go to bed :(
+        // If anyone is reading this have a good day :)
+    }
+
+    // Ahh yes, the memory demons
+    // We must not fall before them
+    // We must study the patterns of their ways
+    // The buddha has truely been testing us
     
+    free(uncompressed_data);
 
     return FF_RESULT_WARN_NO_IMPL;
 }
