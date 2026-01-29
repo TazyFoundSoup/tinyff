@@ -92,6 +92,7 @@ ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     ctx->height = h;
     ctx->bit_depth = buf[8];
     ctx->color_type = buf[9];
+    ctx->interlace_method = buf[12];
 
     ff_dprintf("png: IHDR stored in context\n");
 
@@ -147,6 +148,21 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
         free(uncompressed_data);
         return FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
     }
+
+    ff_dprintf("png: IDAT data uncompressed successfully\n");
+
+    // Now we parse the uncompressed data into our pixel buffer
+    // However I don't understand Adam7 so interlaced images are not supported yet
+    if (ctx->interlace_method != 0) {
+        ff_dprintf("png: interlaced images are not supported yet\n");
+        free(uncompressed_data);
+        return FF_RESULT_WARN_NO_IMPL;
+    }
+
+    // Now I am very inexperienced so I'm doing what I think is right
+    // TODO: Review this code later
+
+    
 
     return FF_RESULT_WARN_NO_IMPL;
 }
