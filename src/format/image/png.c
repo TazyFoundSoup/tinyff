@@ -68,6 +68,25 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
 
 // Handlers
 
+inline uint16_t ff_png_bpp(ff_png_ctx *ctx)
+{
+    int16_t byte_depth = ctx->bit_depth / 8;
+    switch (ctx->color_type) {
+        case 0: // Grayscale
+            return byte_depth * 1; // Gray
+        case 2: // Truecolor
+            return byte_depth * 3; // R, G, B
+        case 3: // Indexed-color
+            return byte_depth * 1; // Index
+        case 4: // Grayscale with alpha
+            return byte_depth * 2; // Gray w/ alpha
+        case 6: // Truecolor with alpha
+            return byte_depth * 4; // R, G, B w/ alpha
+        default:
+            return 0; // damn, you corrupt
+    }
+}
+
 ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: IHDR chunk received (len=%zu)\n", len);
@@ -164,10 +183,13 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
     // Iterate over every scanline
     for (int iline = 0; iline < ctx->height; iline++) {
-        uint8_t line_filter = buf[0];
+        // Make some variables so it's not hella unreadable
+        size_t bpp = ff_png_bpp(ctx);
+        size_t scanline_start = iline * (1 + (ctx->width * bpp));
+        uint8_t filter_type = uncompressed_data[scanline_start];
 
-        // WIP: i have to go to bed :(
-        // If anyone is reading this have a good day :)
+        //
+        
     }
 
     // Ahh yes, the memory demons
