@@ -250,7 +250,7 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                 memcpy(&ctx->data.pixels[iline * ctx->width * bpp], reconstructed_buf, ctx->width * bpp);
 
                 // Copy current reconstructed to previous_row for next iteration (you thought i was going to yap more about png huh, you fool, you are so predictable)
-                memcpy(&previous_row, reconstructed_buf, ctx->width * bpp);
+                memcpy(previous_row, reconstructed_buf, ctx->width * bpp);
 
         } else {
             // Hissy fit time
@@ -274,7 +274,7 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
             memcpy(&ctx->data.imap[iline * ctx->width], reconstructed_buf, ctx->width);
 
             // Copy current reconstructed to previous_row for next iteration
-            memcpy(&previous_row, reconstructed_buf, ctx->width);
+            memcpy(previous_row, reconstructed_buf, ctx->width);
         }
         
     }
