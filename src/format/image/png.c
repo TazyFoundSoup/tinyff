@@ -218,7 +218,19 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                     reconstructed_buf[x] = raw[x] + ((left + above) / 2);
                     break;
                 case 4: // Paeth Predictor
-                    // TODO: Get a Paeth predictor function
+                    {
+                        int p = left + above - diagonal;
+                        int pa = abs(p - left);
+                        int pb = abs(p - above);
+                        int pc = abs(p - diagonal);
+
+                        if (pa <= pb && pa <= pc) 
+                            reconstructed_buf[x] = raw[x] + left;
+                        else if (pb <= pc)
+                            reconstructed_buf[x] = raw[x] + above;
+                        else
+                            reconstructed_buf[x] = raw[x] + diagonal;
+                    }
                     break;
                 default: // Unknown
                     ff_dprintf("png: unsupported scanline filter method '%d'", filter_type);
