@@ -1,1 +1,1 @@
-tinyff: a small multimedia ffmpeg clone
+tinyff: a small file format library
