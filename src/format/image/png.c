@@ -181,21 +181,108 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     // Now I am very inexperienced so I'm doing what I think is right
     // TODO: Review this code later
 
+
+    // Filtering
+
+    size_t bpp = ff_png_bpp(ctx);
+    uint8_t *reconstructed_buf = (uint8_t *) malloc(ctx->width * bpp); // This is the current reconstructed scanline
+    uint8_t *previous_row = (uint8_t *) calloc(ctx->width * bpp, 1); // This is the prior scanline (reconstructed)
+
+
+
     // Iterate over every scanline
     for (int iline = 0; iline < ctx->height; iline++) {
         // Make some variables so it's not hella unreadable
-        size_t bpp = ff_png_bpp(ctx);
         size_t scanline_start = iline * (1 + (ctx->width * bpp));
         uint8_t filter_type = uncompressed_data[scanline_start];
+        uint8_t *raw = &uncompressed_data[scanline_start + 1];
 
-        //
+        
+        // Now I need to iterate over the entire scanline and apply the filter
+        for (size_t x = 0; x < ctx->width * bpp; x++) {
+            uint8_t left = (x >= bpp) ? reconstructed_buf[x - bpp] : 0;
+            uint8_t above = previous_row[x];
+            uint8_t diagonal = (x >= bpp) ? previous_row[x - bpp] : 0;
+
+            switch (filter_type) {
+                case 0: // No filter
+                    reconstructed_buf[x] = raw[x];
+                    break;
+                case 1: // Sub
+                    reconstructed_buf[x] = raw[x] + left;
+                    break;
+                case 2: // Up
+                    reconstructed_buf[x] = raw[x] + above;
+                    break;
+                case 3: // Average
+                    reconstructed_buf[x] = raw[x] + ((left + above) / 2);
+                    break;
+                case 4: // Paeth Predictor
+                    // TODO: Get a Paeth predictor function
+                    break;
+                case 5: // Unknown
+                    ff_dprintf("png: unsupported scanline filter method '%d'", filter_type);
+                    free(reconstructed_buf);
+                    free(previous_row);
+                    free(uncompressed_data);
+                    return FF_RESULT_ERROR_INVALID_FILE;
+            }
+
+        }
+
+        if (ctx->color_type != 3) {
+                // For non-indexed color types, we can directly store the pixels
+                // Allocate pixel buffer if not already done
+                if (ctx->data.pixels == NULL) {
+                    ctx->data.pixels = malloc(ctx->width * ctx->height * bpp);
+                    if (!ctx->data.pixels) {
+                        ff_dprintf("png: failed to allocate memory for pixel data\n");
+                        free(reconstructed_buf);
+                        free(previous_row);
+                        free(uncompressed_data);
+                        return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+                    }
+                }
+
+                // Now we put the current one into previous and into the pixels buffer
+                
+                // Copy current reconstructed to pixels in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (ok ill shut up )
+                memcpy(ctx->data.pixels[iline * ctx->width * bpp], reconstructed_buf, ctx->width * bpp);
+
+                // Copy current reconstructed to previous_row for next iteration (you thought i was going to yap more about png huh, you fool, you are so predictable)
+                memcpy(previous_row, reconstructed_buf, ctx->width * bpp);
+
+        } else {
+            // Hissy fit time
+            // Just kidding
+            // I got all day because of the heatwave going on outside
+            // Indexed color handling
+            // Allocate index map if not already done
+
+            if (ctx->data.imap == NULL) {
+                ctx->data.imap = malloc(ctx->width * ctx->height);
+                if (!ctx->data.imap) {
+                    ff_dprintf("png: failed to allocate memory for index map\n");
+                    free(reconstructed_buf);
+                    free(previous_row);
+                    free(uncompressed_data);
+                    return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+                }
+            }
+
+            // Copy current reconstructed to index map in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (he he he ha )
+            memcpy(ctx->data.imap[iline * ctx->width], reconstructed_buf, ctx->width);
+
+            // Copy current reconstructed to previous_row for next iteration
+            memcpy(previous_row, reconstructed_buf, ctx->width);
+        }
         
     }
 
     // Ahh yes, the memory demons
     // We must not fall before them
     // We must study the patterns of their ways
-    // The buddha has truely been testing us
+    // The buddha has truly been testing us
     
     free(uncompressed_data);
 
