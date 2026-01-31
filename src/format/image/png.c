@@ -247,10 +247,10 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                 // Now we put the current one into previous and into the pixels buffer
                 
                 // Copy current reconstructed to pixels in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (ok ill shut up )
-                memcpy(ctx->data.pixels[iline * ctx->width * bpp], reconstructed_buf, ctx->width * bpp);
+                memcpy(&ctx->data.pixels[iline * ctx->width * bpp], reconstructed_buf, ctx->width * bpp);
 
                 // Copy current reconstructed to previous_row for next iteration (you thought i was going to yap more about png huh, you fool, you are so predictable)
-                memcpy(previous_row, reconstructed_buf, ctx->width * bpp);
+                memcpy(&previous_row, reconstructed_buf, ctx->width * bpp);
 
         } else {
             // Hissy fit time
@@ -271,10 +271,10 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
             }
 
             // Copy current reconstructed to index map in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (he he he ha )
-            memcpy(ctx->data.imap[iline * ctx->width], reconstructed_buf, ctx->width);
+            memcpy(&ctx->data.imap[iline * ctx->width], reconstructed_buf, ctx->width);
 
             // Copy current reconstructed to previous_row for next iteration
-            memcpy(previous_row, reconstructed_buf, ctx->width);
+            memcpy(&previous_row, reconstructed_buf, ctx->width);
         }
         
     }
@@ -285,6 +285,8 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     // The buddha has truly been testing us
     
     free(uncompressed_data);
+    free(reconstructed_buf);
+    free(previous_row);
 
     return FF_RESULT_WARN_NO_IMPL;
 }
