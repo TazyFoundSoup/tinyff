@@ -220,7 +220,7 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                 case 4: // Paeth Predictor
                     // TODO: Get a Paeth predictor function
                     break;
-                case 5: // Unknown
+                default: // Unknown
                     ff_dprintf("png: unsupported scanline filter method '%d'", filter_type);
                     free(reconstructed_buf);
                     free(previous_row);
