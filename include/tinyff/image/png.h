@@ -10,6 +10,7 @@
 #include "tinyff/result.h"
 #include "tinyff/common.h"
 #include "tinyff/stream.h"
+#include "tinyff/image/generic.h"
 
 // External
 #include "ext/tinf.h"
@@ -99,5 +100,7 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
 
 ff_result ff_png_isvalid(ff_stream *stream);
 ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx);
+
+ff_result ff_png_normalize(ff_png_ctx *ctx, ff_image_ctx **out_data);
 
 #endif
