@@ -82,6 +82,9 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // 
 ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
 ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
 
+// Ancillary chunks
+ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // tRNS
+
 
 const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {"IHDR", ff_png_header_handler},
@@ -90,7 +93,7 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {"PLTE", ff_png_palette_handler},   
 
     // From now on, the handlers will be for ancillary chunks
-
+    {"tRNS", ff_png_trans_handler},
 
     {NULL, NULL} // Terminator
 }; 

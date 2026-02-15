@@ -310,3 +310,8 @@ ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
     return FF_RESULT_OK;
 }
+
+ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+{
+    ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
+}
