@@ -36,4 +36,8 @@ typedef struct {
     
 } ff_bmp_ctx;
 
+ff_result ff_bmp_isvalid(ff_stream *stream);
+ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx);
+
+
 #endif BMP_H_
