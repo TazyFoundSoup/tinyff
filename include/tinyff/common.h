@@ -4,6 +4,7 @@
 #define TINYFF_COMMON_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 // Flags
 typedef bool ff_flag;
@@ -13,6 +14,7 @@ typedef bool ff_flag;
 
 // Functions
 
-static inline uint32_t get_big_endian(const uint8_t *buffer);
+inline uint32_t get_big_endian(const uint8_t *buffer);
+inline uint32_t get_little_endian(const uint8_t *buffer);
 
 #endif
