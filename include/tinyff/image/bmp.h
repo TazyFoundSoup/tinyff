@@ -30,6 +30,9 @@ typedef struct {
     uint32_t colors_used;
     uint32_t important_colors;
 
+    uint8_t* palette; 
+    
+    uint8_t* pixels;
     
 } ff_bmp_ctx;
 
