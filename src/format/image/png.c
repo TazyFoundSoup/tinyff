@@ -63,7 +63,7 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
     *out_ctx = ctx;
     ff_dprintf("png: open_png reached WIP end\n");
 
-    return FF_RESULT_OK;
+    return FF_RESULT_WARN_NO_IMPL;
 }
 
 // Handlers
