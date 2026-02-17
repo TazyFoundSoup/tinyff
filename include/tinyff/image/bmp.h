@@ -17,6 +17,10 @@ static const unsigned char BMP_SIGNATURE[2] = {
 };
 
 typedef struct {
+    // Raw stream handle
+    ff_stream *raw;
+
+    
     uint32_t file_size; // tbh, i actually have no idea why this is needed
     uint32_t data_offset;
     
@@ -34,6 +38,9 @@ typedef struct {
     
     uint8_t* pixels;
     
+
+    bool valid;
+    ff_result last_error;
 } ff_bmp_ctx;
 
 ff_result ff_bmp_isvalid(ff_stream *stream);
