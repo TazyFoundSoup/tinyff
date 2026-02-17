@@ -9,6 +9,8 @@ ff_result ff_png_isvalid(ff_stream *stream)
     char raw_sig[8];
     if (stream->read(raw_sig, 8, stream->user) != 8) {
         ff_dprintf("png: failed to read signature bytes\n");
+
+        ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
@@ -20,10 +22,14 @@ ff_result ff_png_isvalid(ff_stream *stream)
 
     if (memcmp(raw_sig, PNG_SIGNATURE, 8) != 0) {
         ff_dprintf("png: signature mismatch\n");
+
+        ctx->last_error = FF_RESULT_ERROR_INVALID_PNG_SIGNITURE;
         return FF_RESULT_ERROR_INVALID_PNG_SIGNITURE;
     }
 
     ff_dprintf("png: signature valid\n");
+
+    ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }
 
@@ -31,7 +37,10 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
 {
 
     ff_png_ctx *ctx = malloc(sizeof(ff_png_ctx));
-    if (!ctx) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    if (!ctx) {
+        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    }
 
     // Init
     memset(ctx, 0, sizeof(*ctx));
@@ -44,6 +53,8 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
         ff_dprintf("png: stream failed to read\n");
         free(ctx);
         ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
+
+        ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
         return FF_RESULT_ERROR_READ_FILE_FAILURE;
     }
 
@@ -54,6 +65,8 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
         ff_dprintf("png: validation failed (%d)\n", res);
         free(ctx);
         ctx->last_error = res;
+
+        ctx->last_error = res;
         return res;
     }
 
@@ -63,6 +76,7 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
     *out_ctx = ctx;
     ff_dprintf("png: open_png reached WIP end\n");
 
+    ctx->last_error = FF_RESULT_WARN_NO_IMPL;
     return FF_RESULT_WARN_NO_IMPL;
 }
 
@@ -93,6 +107,8 @@ ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
     if (len != 13) {
         ff_dprintf("png: invalid IHDR length\n");
+
+        ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
@@ -115,6 +131,7 @@ ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
     ff_dprintf("png: IHDR stored in context\n");
 
+    ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }
 
@@ -124,6 +141,8 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     
     if (len % 3 != 0) {
         ff_dprintf("png: invalid PLTE length\n");
+
+        ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
@@ -132,7 +151,10 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     
     ctx->palette_size = num_entries;
     ctx->palette = malloc(len);
-    if (!ctx->palette) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    if (!ctx->palette) {
+        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    }
     
     for (uint16_t i = 0; i < num_entries; i++) {
         // There's 4 bytes per entry just because if there's
@@ -142,6 +164,7 @@ ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
         ctx->palette[i * 4 + 2] = buf[i * 3 + 2]; // B
     }
     
+    ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }   
 
@@ -159,12 +182,16 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
     if (!uncompressed_data) {
         ff_dprintf("png: failed to allocate memory for uncompressed data\n");
+
+        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
     
     if (tinf_uncompress(uncompressed_data, uncompressed_size, buf, len) != TINF_OK) {
         ff_dprintf("png: failed to uncompress IDAT data\n");
         free(uncompressed_data);
+
+        ctx->last_error = FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
         return FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
     }
 
@@ -175,6 +202,8 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     if (ctx->interlace_method != 0) {
         ff_dprintf("png: interlaced images are not supported yet\n");
         free(uncompressed_data);
+
+        ctx->last_error = FF_RESULT_WARN_NO_IMPL;
         return FF_RESULT_WARN_NO_IMPL;
     }
 
@@ -237,6 +266,8 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                     free(reconstructed_buf);
                     free(previous_row);
                     free(uncompressed_data);
+
+                    ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
                     return FF_RESULT_ERROR_INVALID_FILE;
             }
 
@@ -252,6 +283,8 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                         free(reconstructed_buf);
                         free(previous_row);
                         free(uncompressed_data);
+
+                        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
                         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
                     }
                 }
@@ -278,6 +311,8 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                     free(reconstructed_buf);
                     free(previous_row);
                     free(uncompressed_data);
+
+                    ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
                     return FF_RESULT_ERROR_MEMORY_ALLOCATION;
                 }
             }
@@ -300,6 +335,7 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     free(reconstructed_buf);
     free(previous_row);
 
+    ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_WARN_NO_IMPL;
 }
 
@@ -308,10 +344,20 @@ ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     ff_dprintf("png: IEND chunk received (len=%zu)\n", len);
     ff_dprintf("png: all chunks received\n");
 
+    ctx->valid = true;
+    ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }
 
 ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
     ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
+
+    if (ctx->color_type == 0) { // Grayscale
+        if (len != 2) {
+            ff_dprintf("png: invalid tRNS length for grayscale image\n");
+            ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
+            return FF_RESULT_ERROR_INVALID_FILE;
+        }
+    }
 }
