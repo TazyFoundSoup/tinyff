@@ -21,9 +21,11 @@ static FILE *intff_debug_stream = NULL;
 // Thats why it has the int prefix
 static ff_flag intff_debug_enabled = 0;
 
+// Sets the debug stream. If stream is NULL, debug is disabled.
 ff_result ff_set_debug_stream(FILE *stream);
 
-
+// Prints a string to the debug stream if debug is enabled.
+// The call formatting is the same as printf
 ff_result ff_dprintf(const char *format, ...);
 
 #endif
