@@ -1,6 +1,5 @@
-#include "tinyff/image/png.h"
+#include <tinyff/image/png.h>
 #include "tinyff/dbg.h"
-#include "png.h"
 
 ff_result ff_png_isvalid(ff_stream *stream)
 {
