@@ -48,9 +48,6 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
     if (ctx->raw->read == NULL) {
         ff_dprintf("png: stream failed to read\n");
         free(ctx);
-        ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
-
-        ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
         return FF_RESULT_ERROR_READ_FILE_FAILURE;
     }
 
@@ -336,7 +333,9 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 }
 
 ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
-{
+{   
+    (void)buf; // Unused (for now)
+    
     ff_dprintf("png: IEND chunk received (len=%zu)\n", len);
     ff_dprintf("png: all chunks received\n");
 
@@ -347,6 +346,8 @@ ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
 ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 {
+    (void)buf; // Unused (for now)
+    
     ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
 
     if (ctx->color_type == 0) { // Grayscale
@@ -356,6 +357,7 @@ ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
             return FF_RESULT_ERROR_INVALID_FILE;
         }
     }
-    
+    (void)buf; // Unused (for now)
+
     return FF_RESULT_WARN_NO_IMPL;
 }
