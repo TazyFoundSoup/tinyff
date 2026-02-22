@@ -18,7 +18,7 @@ typedef enum {
     // Media specific
     
     // PNG
-    FF_RESULT_ERROR_INVALID_PNG_SIGNITURE,
+    FF_RESULT_ERROR_INVALID_PNG_SIGNATURE,
 
     // Archive (more general archives terms)
     FF_RESULT_ERROR_DECOMPRESSION_FAILURE,
