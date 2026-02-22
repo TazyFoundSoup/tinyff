@@ -50,7 +50,6 @@ ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx)
     if (res != FF_RESULT_OK) {
         ff_dprintf("bmp: validation failed (%d)\n", res);
         free(ctx);
-        ctx->last_error = res;
         return res;
     }
 
