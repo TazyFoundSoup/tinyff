@@ -1,5 +1,4 @@
 #include "tinyff/common.h"
-#include "common.h"
 
 inline uint32_t get_big_endian(const uint8_t *buffer) {
     return (uint32_t)(buffer[0] << 24) |
