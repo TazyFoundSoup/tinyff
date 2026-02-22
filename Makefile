@@ -6,16 +6,17 @@ SRC=$(shell find src -name "*.c")
 OBJ=$(SRC:.c=.o)
 
 LIB=libtinyff.a
+OUTDIR=dist
 
 all: $(LIB)
 
 $(LIB): $(OBJ)
-	$(AR) rcs $(LIB) $(OBJ)
+	$(AR) rcs $(OUTDIR)/$(LIB) $(OUTDIR)/$(OBJ)
 
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) -c $< -o $(OUTDIR)/$@
 
 clean:
-	rm -f $(OBJ) $(LIB)
+	rm -f $(OUTDIR)/$(OBJ) $(LIB)
 
 .PHONY: all clean
