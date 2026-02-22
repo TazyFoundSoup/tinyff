@@ -1,8 +1,8 @@
 // This is the generics image header file for tinyff
 // It contains generic image structures and definitions
 
-#include "common.h"
-#include "result.h"
+#include <tinyff/common.h>
+#include <tinyff/result.h>
 
 #ifndef GENERIC_IMAGE_H
 #define GENERIC_IMAGE_H

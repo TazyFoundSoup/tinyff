@@ -1,4 +1,4 @@
-#include "stream.h"
+#include <tinyff/stream.h>
 
 size_t ff_file_read(void *ptr, size_t size, void *user)
 {

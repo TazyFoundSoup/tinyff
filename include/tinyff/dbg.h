@@ -12,8 +12,8 @@
 
 #include <stdio.h>
 #include <stdarg.h>
-#include "result.h"
-#include "common.h"
+#include <tinyff/result.h>
+#include <tinyff/common.h>
 
 static FILE *intff_debug_stream = NULL;
 

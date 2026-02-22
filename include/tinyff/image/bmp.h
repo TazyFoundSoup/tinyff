@@ -7,9 +7,9 @@
 #include <stdlib.h>
 
 
-#include "tinyff/result.h"
-#include "tinyff/stream.h"
-#include "tinyff/image/generic.h"
+#include <tinyff/result.h>
+#include <tinyff/stream.h>
+#include <tinyff/image/generic.h>
 
 static const unsigned char BMP_SIGNATURE[2] = {
     'B', 'M'

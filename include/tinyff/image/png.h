@@ -7,10 +7,10 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include "tinyff/result.h"
-#include "tinyff/common.h"
-#include "tinyff/stream.h"
-#include "tinyff/image/generic.h"
+#include <tinyff.h>
+#include <tinyff/common.h>
+#include <tinyff/stream.h>
+#include <tinyff/image/generic.h>
 
 // External
 #include "ext/tinf.h"

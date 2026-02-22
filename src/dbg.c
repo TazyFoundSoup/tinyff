@@ -1,4 +1,4 @@
-#include "dbg.h"
+#include <tinyff/dbg.h>
 
 ff_result ff_set_debug_stream(FILE *stream)
 {
