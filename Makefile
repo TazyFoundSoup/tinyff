@@ -14,6 +14,7 @@ $(OUTDIR)/$(LIB): $(OBJ)
 	@mkdir -p $(OUTDIR)
 	$(AR) rcs $@ $(addprefix $(OUTDIR)/,$(OBJ))
 
+	
 %.o: %.c
 	@mkdir -p $(dir $(OUTDIR)/$@)
 	$(CC) $(CFLAGS) -c $< -o $(OUTDIR)/$@
