@@ -4,12 +4,10 @@
 ff_result ff_png_isvalid(ff_stream *stream)
 {
     ff_dprintf("png: validating signature\n");
-
+    
     char raw_sig[8];
     if (stream->read(raw_sig, 8, stream->user) != 8) {
         ff_dprintf("png: failed to read signature bytes\n");
-
-        ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
@@ -21,14 +19,11 @@ ff_result ff_png_isvalid(ff_stream *stream)
 
     if (memcmp(raw_sig, PNG_SIGNATURE, 8) != 0) {
         ff_dprintf("png: signature mismatch\n");
-
-        ctx->last_error = FF_RESULT_ERROR_INVALID_PNG_SIGNITURE;
-        return FF_RESULT_ERROR_INVALID_PNG_SIGNITURE;
+        return FF_RESULT_ERROR_INVALID_PNG_SIGNATURE;
     }
 
     ff_dprintf("png: signature valid\n");
 
-    ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }
 
@@ -186,7 +181,7 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
     
-    if (tinf_uncompress(uncompressed_data, uncompressed_size, buf, len) != TINF_OK) {
+    if (tinf_uncompress(uncompressed_data, (unsigned int *)uncompressed_size, buf, len) != TINF_OK) {
         ff_dprintf("png: failed to uncompress IDAT data\n");
         free(uncompressed_data);
 
