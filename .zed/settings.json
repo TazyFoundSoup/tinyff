@@ -1,0 +1,12 @@
+{
+  "languages": {
+    "C": {
+      "inlay_hints": {
+        "enabled": true
+      }
+    }
+  },
+  "prettier": {
+    "allowed": true
+  }
+}
