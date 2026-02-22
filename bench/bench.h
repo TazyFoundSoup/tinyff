@@ -47,6 +47,8 @@ static inline ff_result ff_bench_mark(ff_bench *b, const char *label) {
     
     b->markers[b->_mcount] = m;
     b->_mcount++;
+    
+    return FF_RESULT_OK;
 }
 
 static inline double ff_bench_seconds(const ff_bench *b) {
