@@ -8,18 +8,17 @@ OBJ=$(SRC:.c=.o)
 LIB=libtinyff.a
 OUTDIR=dist
 
-all: $(LIB)
+all: $(OUTDIR)/$(LIB)
 
-$(OUTDIR):
-	mkdir -p $(OUTDIR)
-
-$(LIB): $(OBJ)
-	$(AR) rcs $(OUTDIR)/$(LIB) $(OUTDIR)/$(OBJ)
+$(OUTDIR)/$(LIB): $(OBJ)
+	@mkdir -p $(OUTDIR)
+	$(AR) rcs $@ $(addprefix $(OUTDIR)/,$(OBJ))
 
 %.o: %.c
+	@mkdir -p $(dir $(OUTDIR)/$@)
 	$(CC) $(CFLAGS) -c $< -o $(OUTDIR)/$@
 
 clean:
-	rm -f $(OUTDIR)/$(OBJ) $(LIB)
+	rm -rf $(OUTDIR)
 
 .PHONY: all clean
