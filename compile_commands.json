@@ -11,68 +11,49 @@
       "-Iinclude/ext",
       "-c",
       "-o",
-      "src/common.o",
-      "src/common.c"
-    ],
-    "directory": "/home/watson/tinyff",
-    "file": "/home/watson/tinyff/src/common.c",
-    "output": "/home/watson/tinyff/src/common.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-Wall",
-      "-Wextra",
-      "-std=c11",
-      "-O2",
-      "-Iinclude",
-      "-Iinclude/tinyff",
-      "-Iinclude/ext",
-      "-c",
-      "-o",
-      "src/stream.o",
-      "src/stream.c"
-    ],
-    "directory": "/home/watson/tinyff",
-    "file": "/home/watson/tinyff/src/stream.c",
-    "output": "/home/watson/tinyff/src/stream.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-Wall",
-      "-Wextra",
-      "-std=c11",
-      "-O2",
-      "-Iinclude",
-      "-Iinclude/tinyff",
-      "-Iinclude/ext",
-      "-c",
-      "-o",
-      "src/dbg.o",
-      "src/dbg.c"
-    ],
-    "directory": "/home/watson/tinyff",
-    "file": "/home/watson/tinyff/src/dbg.c",
-    "output": "/home/watson/tinyff/src/dbg.o"
-  },
-  {
-    "arguments": [
-      "/usr/bin/gcc",
-      "-Wall",
-      "-Wextra",
-      "-std=c11",
-      "-O2",
-      "-Iinclude",
-      "-Iinclude/tinyff",
-      "-Iinclude/ext",
-      "-c",
-      "-o",
       "src/format/image/bmp.o",
       "src/format/image/bmp.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/format/image/bmp.c",
     "output": "/home/watson/tinyff/src/format/image/bmp.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-O2",
+      "-Iinclude",
+      "-Iinclude/tinyff",
+      "-Iinclude/ext",
+      "-c",
+      "-o",
+      "src/format/image/png.o",
+      "src/format/image/png.c"
+    ],
+    "directory": "/home/watson/tinyff",
+    "file": "/home/watson/tinyff/src/format/image/png.c",
+    "output": "/home/watson/tinyff/src/format/image/png.o"
+  },
+  {
+    "arguments": [
+      "/usr/bin/gcc",
+      "-Wall",
+      "-Wextra",
+      "-std=c11",
+      "-O2",
+      "-Iinclude",
+      "-Iinclude/tinyff",
+      "-Iinclude/ext",
+      "-c",
+      "-o",
+      "src/ext/tinflate.o",
+      "src/ext/tinflate.c"
+    ],
+    "directory": "/home/watson/tinyff",
+    "file": "/home/watson/tinyff/src/ext/tinflate.c",
+    "output": "/home/watson/tinyff/src/ext/tinflate.o"
   }
 ]

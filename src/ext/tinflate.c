@@ -23,7 +23,7 @@
  *      distribution.
  */
 
-#include "include/ext/tinf.h"
+#include "ext/tinf.h"
 
 #include <assert.h>
 #include <limits.h>
