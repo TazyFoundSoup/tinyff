@@ -64,9 +64,7 @@ typedef struct {
 static inline uint16_t ff_png_bpp(ff_png_ctx *ctx);
 
 
-// Chunk handling
-
-typedef (*ff_png_chunk_handler_ptr)(uint8_t *buf, size_t len, ff_png_ctx* ctx);
+typedef ff_result (*ff_png_chunk_handler_ptr)(uint8_t *buf, size_t len, ff_png_ctx* ctx);
 
 typedef struct {
     const char *type;
