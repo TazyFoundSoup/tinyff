@@ -10,6 +10,9 @@ OUTDIR=dist
 
 all: $(LIB)
 
+$(OUTDIR):
+	mkdir -p $(OUTDIR)
+
 $(LIB): $(OBJ)
 	$(AR) rcs $(OUTDIR)/$(LIB) $(OUTDIR)/$(OBJ)
 
