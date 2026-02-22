@@ -57,9 +57,6 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
     if (res != FF_RESULT_OK) {
         ff_dprintf("png: validation failed (%d)\n", res);
         free(ctx);
-        ctx->last_error = res;
-
-        ctx->last_error = res;
         return res;
     }
 
