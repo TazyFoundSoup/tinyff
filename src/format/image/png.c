@@ -1,4 +1,5 @@
 #include <tinyff/image/png.h>
+#include "result.h"
 #include "tinyff/dbg.h"
 
 ff_result ff_png_isvalid(ff_stream *stream)
@@ -214,7 +215,7 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
 
     // Iterate over every scanline
-    for (int iline = 0; iline < ctx->height; iline++) {
+    for (int iline = 0; (uint32_t) iline < ctx->height; iline++) {
         // Make some variables so it's not hella unreadable
         size_t scanline_start = iline * (1 + (ctx->width * bpp));
         uint8_t filter_type = uncompressed_data[scanline_start];
@@ -354,4 +355,6 @@ ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
             return FF_RESULT_ERROR_INVALID_FILE;
         }
     }
+    
+    return FF_RESULT_WARN_NO_IMPL;
 }
