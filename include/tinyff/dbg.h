@@ -15,11 +15,11 @@
 #include <tinyff/result.h>
 #include <tinyff/common.h>
 
-static FILE *intff_debug_stream = NULL;
+extern FILE *intff_debug_stream;
 
 // This flag is the same name as FF_DEBUG_ENABLED but is local to this file
 // Thats why it has the int prefix
-static ff_flag intff_debug_enabled = 0;
+extern ff_flag intff_debug_enabled;
 
 // Sets the debug stream. If stream is NULL, debug is disabled.
 ff_result ff_set_debug_stream(FILE *stream);

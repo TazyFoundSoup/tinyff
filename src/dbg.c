@@ -1,5 +1,8 @@
 #include <tinyff/dbg.h>
 
+FILE *intff_debug_stream = NULL;
+ff_flag intff_debug_enabled = 0;
+
 ff_result ff_set_debug_stream(FILE *stream)
 {
     intff_debug_stream = stream;
