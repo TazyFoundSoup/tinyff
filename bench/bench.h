@@ -2,6 +2,7 @@
 #define TINYFF_BENCH_H_
 
 #include <time.h>
+#include <tinyff/result.h>
 
 #define FF_BENCH_MAX_MARKERS 32
 
@@ -37,8 +38,8 @@ static inline void ff_bench_end(ff_bench *b) {
     b->_end = clock();
 }
 
-static inline void ff_bench_mark(ff_bench *b, const char *label) {
-    if (b->_mcount >= FF_BENCH_MAX_MARKERS) return;
+static inline ff_result ff_bench_mark(ff_bench *b, const char *label) {
+    if (b->_mcount >= FF_BENCH_MAX_MARKERS) return FF_RESULT_ERROR_OUT_OF_BOUNDS;
     
     ff_bench_marker m;
     m.label = label;

@@ -14,6 +14,9 @@ typedef enum {
     // File
     FF_RESULT_ERROR_INVALID_FILE,
     FF_RESULT_ERROR_READ_FILE_FAILURE,
+    
+    // Generic
+    FF_RESULT_ERROR_OUT_OF_BOUNDS,
 
     // Media specific
     
