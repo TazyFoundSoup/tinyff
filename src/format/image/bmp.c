@@ -40,7 +40,6 @@ ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx)
     if (ctx->raw->read == NULL) {
         ff_dprintf("bmp: stream failed to read\n");
         free(ctx);
-        ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
         return FF_RESULT_ERROR_READ_FILE_FAILURE;
     }
 
