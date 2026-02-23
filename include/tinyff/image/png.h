@@ -12,8 +12,6 @@
 #include <tinyff/stream.h>
 #include <tinyff/image/generic.h>
 
-// External
-#include "ext/tinf.h"
 
 
 static const unsigned char PNG_SIGNATURE[8] = {

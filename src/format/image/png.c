@@ -3,6 +3,9 @@
 #include <tinyff/common.h>
 #include <tinyff/dbg.h>
 
+// External
+#include <ext/tinf.h>
+
 ff_result ff_png_isvalid(ff_stream *stream)
 {
     ff_dprintf("png: validating signature\n");
