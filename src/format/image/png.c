@@ -32,9 +32,11 @@ ff_result ff_png_isvalid(ff_stream *stream)
     return FF_RESULT_OK;
 }
 
-ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx)
+ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid)
 {
-
+    
+    (void)require_valid; // Just cast to void for now until I impl
+    
     ff_png_ctx *ctx = malloc(sizeof(ff_png_ctx));
     if (!ctx) {
         ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;

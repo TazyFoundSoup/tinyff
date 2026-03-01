@@ -98,7 +98,7 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
 
 
 ff_result ff_png_isvalid(ff_stream *stream);
-ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx);
+ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid);
 
 ff_result ff_png_normalize(ff_png_ctx *ctx, ff_image_ctx **out_data);
 
