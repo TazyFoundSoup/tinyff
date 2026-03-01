@@ -45,7 +45,7 @@ typedef struct {
 typedef ff_result (*ff_bmp_section_handler_ptr)(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
 
 ff_result ff_bmp_isvalid(ff_stream *stream);
-ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx);
+ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_valid);
 
 
 #endif // BMP_H_

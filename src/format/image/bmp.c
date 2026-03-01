@@ -25,7 +25,7 @@ ff_result ff_bmp_isvalid(ff_stream* stream)
     return FF_RESULT_OK;
 }
 
-ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx)
+ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_valid)
 {
 
     ff_bmp_ctx *ctx = malloc(sizeof(ff_bmp_ctx));
@@ -45,11 +45,13 @@ ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx)
 
     ff_dprintf("bmp: stream read successfully\n");
 
-    ff_result res = ff_bmp_isvalid(ctx->raw);
-    if (res != FF_RESULT_OK) {
-        ff_dprintf("bmp: validation failed (%d)\n", res);
-        free(ctx);
-        return res;
+    if (require_valid) {
+        ff_result res = ff_bmp_isvalid(ctx->raw);
+        if (res != FF_RESULT_OK) {
+            ff_dprintf("bmp: validation failed (%d)\n", res);
+            free(ctx);
+            return res;
+        }
     }
 
     ff_dprintf("bmp: validation passed\n");
