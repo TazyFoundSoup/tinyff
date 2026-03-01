@@ -1,6 +1,9 @@
 CC=gcc
 AR=ar
-CFLAGS=-Wall -Wextra -std=c11 -O2 -Iinclude -Iinclude/tinyff -Iinclude/ext
+CFLAGS=-Wall -Wextra -std=c11 -O2 \
+	-Iinclude \
+	-Iinclude/tinyff \
+	-Iinclude/ext
 
 SRC=$(shell find src -name "*.c")
 OBJ=$(patsubst src/%.c,$(OUTDIR)/src/%.o,$(SRC))
