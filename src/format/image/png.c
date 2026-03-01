@@ -58,11 +58,13 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_v
 
     ff_dprintf("png: stream read successfully\n");
 
-    ff_result res = ff_png_isvalid(ctx->raw);
-    if (res != FF_RESULT_OK) {
-        ff_dprintf("png: validation failed (%d)\n", res);
-        free(ctx);
-        return res;
+    if (require_valid) {
+        ff_result res = ff_png_isvalid(ctx->raw);
+        if (res != FF_RESULT_OK) {
+            ff_dprintf("png: validation failed (%d)\n", res);
+            free(ctx);
+            return res;
+        }
     }
 
     ff_dprintf("png: validation passed\n");
