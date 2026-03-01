@@ -2,6 +2,11 @@
 #define RESULT_H
 
 typedef enum {
+    FF_TRUE = 0,
+    FF_FALSE = 1
+} FF_FLAG;
+
+typedef enum {
     // -- SUCCESS -- 
     FF_RESULT_OK = 0,
 
