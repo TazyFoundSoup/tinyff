@@ -15,11 +15,6 @@
 #include <tinyff/result.h>
 #include <tinyff/common.h>
 
-extern FILE *intff_debug_stream;
-
-// This flag is the same name as FF_DEBUG_ENABLED but is local to this file
-// Thats why it has the int prefix
-extern ff_flag intff_debug_enabled;
 
 // Sets the debug stream. If stream is NULL, debug is disabled.
 ff_result ff_set_debug_stream(FILE *stream);
