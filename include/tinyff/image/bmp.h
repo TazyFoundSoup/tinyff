@@ -44,6 +44,27 @@ typedef struct {
 
 typedef ff_result (*ff_bmp_section_handler_ptr)(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
 
+typedef struct {
+    // Even though the types in bitmaps are invisible (they don't have labels)
+    // I'll just keep them in for the sake of being in
+    // And I might just handle the section looping a bit differently
+    // And their names will be what I saw in the spec
+    
+    const char* type;
+    ff_bmp_section_handler_ptr handler;
+} ff_bmp_section_handler;
+
+const ff_bmp_section_handler ff_png_chunk_handlers[] = {
+    // TODO: Make handlers
+    
+    {"Header", NULL},
+    {"InfoHeader", NULL},
+    {"ColorTable", NULL},
+    {"RasterData", NULL},
+    
+    {NULL, NULL} // Terminator
+}; 
+
 ff_result ff_bmp_isvalid(ff_stream *stream);
 ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_valid);
 
