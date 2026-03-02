@@ -39,7 +39,7 @@ ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_v
     
     ff_png_ctx *ctx = malloc(sizeof(ff_png_ctx));
     if (!ctx) {
-        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        // lol, i actually set the last_error field here. now its just this comment. im so frickin dumb bruh
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
 
