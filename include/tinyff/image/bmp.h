@@ -54,13 +54,17 @@ typedef struct {
     ff_bmp_section_handler_ptr handler;
 } ff_bmp_section_handler;
 
-const ff_bmp_section_handler ff_png_chunk_handlers[] = {
-    // TODO: Make handlers
+ff_result ff_bmp_header_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
+ff_result ff_bmp_info_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
+ff_result ff_bmp_color_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
+ff_result ff_bmp_data_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
+
+const ff_bmp_section_handler ff_bmp_section_handlers[] = {
     
-    {"Header", NULL},
-    {"InfoHeader", NULL},
-    {"ColorTable", NULL},
-    {"RasterData", NULL},
+    {"Header", ff_bmp_header_handler},
+    {"InfoHeader", ff_bmp_info_handler},
+    {"ColorTable", ff_bmp_color_handler},
+    {"RasterData", ff_bmp_data_handler},
     
     {NULL, NULL} // Terminator
 }; 
