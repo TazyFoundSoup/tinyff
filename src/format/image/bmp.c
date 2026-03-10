@@ -1,3 +1,4 @@
+#include "result.h"
 #include <tinyff/image/bmp.h>
 #include <tinyff/dbg.h>
 
@@ -64,7 +65,12 @@ ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_v
 }
 
 ff_result ff_bmp_header_handler(uint8_t *buf, size_t len, ff_bmp_ctx *ctx) {
+    (void) buf;
+    (void) ctx;
+    
     if (len != FF_BMP_HEADER_SIZE) {
         
     }
+    
+    return FF_RESULT_WARN_NO_IMPL;
 }
