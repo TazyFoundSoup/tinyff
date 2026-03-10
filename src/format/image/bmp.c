@@ -64,7 +64,7 @@ ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_v
 }
 
 ff_result ff_bmp_header_handler(uint8_t *buf, size_t len, ff_bmp_ctx *ctx) {
-    if (len != 14) {
+    if (len != FF_BMP_HEADER_SIZE) {
         
     }
 }
