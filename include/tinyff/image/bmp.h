@@ -11,6 +11,11 @@
 #include <tinyff/stream.h>
 #include <tinyff/image/generic.h>
 
+#define FF_BMP_HEADER_SIZE 14
+#define FF_BMP_INFO_SIZE 40
+#define FF_BMP_COLOR_TABLE_SIZE(bpp, clrused) \
+    ((bpp) <= 8 ? (4 * ((clrused) ? (clrused) : (1u << (bpp)))) : 0)
+
 static const unsigned char BMP_SIGNATURE[2] = {
     'B', 'M'
 };
