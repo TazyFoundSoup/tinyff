@@ -6,6 +6,13 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+// Context bases
+// Default
+#define FF_BASE \
+    bool valid; \
+    ff_result last_error;
+
+
 // Flags
 typedef bool ff_flag;
 

@@ -21,6 +21,8 @@ static const unsigned char BMP_SIGNATURE[2] = {
 };
 
 typedef struct {
+    FF_BASE
+    
     // Raw stream handle
     ff_stream *raw;
 
@@ -42,9 +44,6 @@ typedef struct {
     
     uint8_t* pixels;
     
-
-    bool valid;
-    ff_result last_error;
 } ff_bmp_ctx;
 
 typedef ff_result (*ff_bmp_section_handler_ptr)(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);

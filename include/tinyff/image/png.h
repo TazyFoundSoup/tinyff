@@ -25,6 +25,8 @@ typedef enum {
 } ff_png_mode;
 
 typedef struct {
+    FF_BASE
+    
     // Raw stream handle
     ff_stream *raw;
 
@@ -51,9 +53,6 @@ typedef struct {
     // Palette (if needed; can be left NULL if it's direct color)
     uint8_t* palette;
     uint32_t palette_size;
-
-    bool valid;
-    ff_result last_error;
 
 } ff_png_ctx;
 
