@@ -69,7 +69,9 @@ ff_result ff_bmp_header_handler(uint8_t *buf, size_t len, ff_bmp_ctx *ctx) {
     (void) ctx;
     
     if (len != FF_BMP_HEADER_SIZE) {
-        
+        ff_dprintf("bmp: bitmap header is not correct size (expected 14, got %d)\n", len);
+        ctx->last_error = FF_RESULT_ERROR_INVALID_BMP_HEADER;
+        return FF_RESULT_ERROR_INVALID_BMP_HEADER;
     }
     
     return FF_RESULT_WARN_NO_IMPL;

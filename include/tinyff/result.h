@@ -27,6 +27,9 @@ typedef enum {
     
     // PNG
     FF_RESULT_ERROR_INVALID_PNG_SIGNATURE,
+    
+    // BMP
+    FF_RESULT_ERROR_INVALID_BMP_HEADER,
 
     // Archive (more general archives terms)
     FF_RESULT_ERROR_DECOMPRESSION_FAILURE,
