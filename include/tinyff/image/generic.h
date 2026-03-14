@@ -13,6 +13,7 @@
 
 typedef enum {
     FF_IMAGE_ORIGIN_PNG,
+    FF_IMAGE_ORIGIN_BMP
 } ff_image_origin;
 
 // Only the basic information about an image
