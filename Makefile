@@ -1,27 +1,38 @@
-CC=gcc
-AR=ar
-CFLAGS=-Wall -Wextra -std=c11 -O2 \
-	-Iinclude \
-	-Iinclude/tinyff \
-	-Iinclude/ext
+CC ?= gcc
+AR ?= ar
 
-SRC=$(shell find src -name "*.c")
-OBJ=$(patsubst src/%.c,$(OUTDIR)/src/%.o,$(SRC))
+OUTDIR = dist
+LIB = libtinyff.a
 
-LIB=libtinyff.a
-OUTDIR=dist
+CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -Iinclude/tinyff -Iinclude/ext
+DEBUG_FLAGS = -g -O0
+RELEASE_FLAGS = -O2
+SANFLAGS = -fsanitize=address,undefined -g -O1
+
+SRC = $(shell find src -name "*.c")
+OBJ = $(patsubst src/%.c,$(OUTDIR)/src/%.o,$(SRC))
 
 all: $(OUTDIR)/$(LIB)
 
 $(OUTDIR)/$(LIB): $(OBJ)
-	@mkdir -p $(OUTDIR)
+	mkdir -p $(OUTDIR)
 	$(AR) rcs $@ $^
 
 $(OUTDIR)/src/%.o: src/%.c
-	@mkdir -p $(dir $@)
+	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(OUTDIR)
 
-.PHONY: all clean
+debug: CFLAGS += $(DEBUG_FLAGS)
+debug: clean all
+
+release: CFLAGS += $(RELEASE_FLAGS)
+release: clean all
+
+asan: CC=clang
+asan: CFLAGS += $(SANFLAGS)
+asan: clean all
+
+.PHONY: all clean debug release asan
