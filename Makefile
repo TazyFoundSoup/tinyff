@@ -10,6 +10,11 @@ RELEASE_FLAGS = -O2
 SANFLAGS = -fsanitize=address,undefined -g -O1
 
 SRC = $(shell find src -name "*.c")
+
+ifeq ($(USE_HOSTED),1)
+SRC += $(wildcard bridges/*.c)
+endif
+
 OBJ = $(patsubst src/%.c,$(OUTDIR)/src/%.o,$(SRC))
 
 all: $(OUTDIR)/$(LIB)
