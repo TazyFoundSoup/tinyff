@@ -5,4 +5,4 @@ These files **do not need to be compiled** if you are running tinyff on a freest
 
 ## Structure
 
-`stream_file.c`: The bridge for file handling.
+`stdio/`: Bridges which use the stdio library
