@@ -14,7 +14,9 @@ SANFLAGS = -fsanitize=address,undefined -g -O1
 SRC = $(shell find src -name "*.c")
 
 ifeq ($(USE_HOSTED),1)
-SRC += $(wildcard bridges/*.c)
+INCLUDES += -Iinclude/bridges
+CFLAGS += -DUSE_HOSTED
+SRC += $(wildcard include/bridges/*.c)
 endif
 
 OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
@@ -28,7 +30,6 @@ $(OUTDIR)/$(LIB): $(OBJ)
 $(OUTDIR)/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
-
 
 clean:
 	rm -rf $(OUTDIR)
