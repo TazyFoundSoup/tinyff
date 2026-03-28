@@ -13,5 +13,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: make
-      run: make
+    - name: Make (GCC)
+      run: make CC=gcc
+
+    - name: Make (Clang)
+      run: make CC=clang
