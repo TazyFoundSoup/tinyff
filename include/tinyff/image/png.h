@@ -7,7 +7,7 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <tinyff.h>
+#include <tinyff/tinyff.h>
 #include <tinyff/common.h>
 #include <tinyff/stream.h>
 #include <tinyff/image/generic.h>
