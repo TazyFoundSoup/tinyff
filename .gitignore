@@ -1,3 +1,4 @@
 dist/*
 .cache/*
 tests/logs/*
+bench/dist/*
