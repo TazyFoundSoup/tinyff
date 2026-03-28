@@ -23,7 +23,7 @@ $(OUTDIR)/$(LIB): $(OBJ)
 	mkdir -p $(OUTDIR)
 	$(AR) rcs $@ $^
 
-$(OUTDIR)/src/%.o: src/%.c
+$(OUTDIR)/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
