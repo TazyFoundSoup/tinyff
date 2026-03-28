@@ -4,6 +4,7 @@
 
 #include "common.h"
 #include "stream.h"
+
 typedef struct {
     // Debug settings
     ff_stream* ff_debug_stream;

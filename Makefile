@@ -27,6 +27,7 @@ $(OUTDIR)/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) -c $< -o $@
 
+
 clean:
 	rm -rf $(OUTDIR)
 

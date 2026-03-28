@@ -74,5 +74,10 @@ ff_result ff_bmp_header_handler(uint8_t *buf, size_t len, ff_bmp_ctx *ctx) {
         return FF_RESULT_ERROR_INVALID_BMP_HEADER;
     }
     
+    // We've already read the signiture so we just jump straight to 
+    // the fileSize part
+    
+    ctx->file_size = buf[4];
+    
     return FF_RESULT_WARN_NO_IMPL;
 }
