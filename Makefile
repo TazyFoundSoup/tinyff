@@ -15,7 +15,7 @@ ifeq ($(USE_HOSTED),1)
 SRC += $(wildcard bridges/*.c)
 endif
 
-OBJ = $(patsubst src/%.c,$(OUTDIR)/src/%.o,$(SRC))
+OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
 
 all: $(OUTDIR)/$(LIB)
 
