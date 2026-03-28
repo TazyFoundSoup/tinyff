@@ -4,7 +4,7 @@ AR ?= ar
 OUTDIR = dist
 LIB = libtinyff.a
 
-CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -Iinclude/tinyff -Iinclude/ext
+CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
 DEBUG_FLAGS = -g -O0
 RELEASE_FLAGS = -O2
 SANFLAGS = -fsanitize=address,undefined -g -O1
