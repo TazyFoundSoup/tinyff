@@ -61,7 +61,7 @@ typedef struct {
 static inline uint16_t ff_png_bpp(ff_png_ctx *ctx);
 
 
-typedef ff_result (*ff_png_chunk_handler_ptr)(uint8_t *buf, size_t len, ff_png_ctx* ctx);
+typedef ff_result (*ff_png_chunk_handler_ptr)(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx);
 
 typedef struct {
     const char *type;
@@ -72,33 +72,21 @@ typedef struct {
 // Massive W.I.P
 
 // Required by definition
-ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IHDR
-ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // PLTE
-ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IDAT
-ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // IEND
+ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // IHDR
+ff_result ff_png_palette_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // PLTE
+ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // IDAT
+ff_result ff_png_end_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // IEND
 
 // Ancillary chunks
-ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx* ctx); // tRNS
+ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // tRNS
 
 
-const ff_png_chunk_handler ff_png_chunk_handlers[] = {
-    {"IHDR", ff_png_header_handler},
-    {"IDAT", ff_png_data_handler},
-    {"IEND", ff_png_end_handler},
-    {"PLTE", ff_png_palette_handler},   
-
-    // From now on, the handlers will be for ancillary chunks
-    {"tRNS", ff_png_trans_handler},
-
-    {NULL, NULL} // Terminator
-}; 
+extern const ff_png_chunk_handler ff_png_chunk_handlers[];
 
 
 
 
-ff_result ff_png_isvalid(ff_stream *stream);
-ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid);
 
-ff_result ff_png_normalize(ff_png_ctx *ctx, ff_image_ctx **out_data);
+ff_result ff_png_normalize(ff_ctx* ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data);
 
 #endif
