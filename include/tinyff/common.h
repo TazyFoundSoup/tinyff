@@ -5,13 +5,8 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-
-// Context bases
-// Default
-#define FF_BASE \
-    bool valid; \
-    ff_result last_error;
-
+#include <stddef.h>
+#include <tinyff/stream.h>
 
 // Flags
 typedef bool ff_flag;
@@ -35,5 +30,44 @@ static inline uint32_t get_little_endian(const uint8_t *buffer)
            (uint32_t)(buffer[2] << 16) |
            (uint32_t)(buffer[3] << 24);
 }
+
+
+// Small stdlib helper functions
+static inline size_t ff_strlen(const char *str)
+{
+    size_t len = 0;
+    while (str[len] != '\0') {
+        len++;
+    }
+    return len;
+}
+
+
+// Context bases
+// Default
+
+typedef struct {
+    void* (*ff_alloc)(size_t size);
+    void  (*ff_free)(void* ptr);
+    void* (*ff_calloc)(size_t count, size_t size);
+} ff_allocator;
+
+typedef struct {
+    // Debug settings
+    ff_stream* ff_debug_stream;
+    ff_flag ff_debug_enabled;
+    
+    // Allocation
+    ff_allocator allocator;
+} ff_ctx;
+
+ff_ctx* ff_init(ff_allocator* allocator);
+void ff_cleanup(ff_ctx* ctx);
+
+
+// Small math functions
+// TODO: Implement a full math library for tinyff
+
+#define FF_ABS(a) (((a) < 0) ? -(a) : (a))
 
 #endif
