@@ -11,6 +11,7 @@
 #include <tinyff/common.h>
 #include <tinyff/stream.h>
 #include <tinyff/image/generic.h>
+#include <tinyff/dbg.h>
 
 
 

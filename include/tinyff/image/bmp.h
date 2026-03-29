@@ -10,6 +10,7 @@
 #include <tinyff/result.h>
 #include <tinyff/stream.h>
 #include <tinyff/image/generic.h>
+#include <tinyff/tinyff.h>
 
 #define FF_BMP_HEADER_SIZE 14
 #define FF_BMP_INFO_SIZE 40
