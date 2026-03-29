@@ -1,3 +1,7 @@
+# NOTE: There is no way to ignore raw executables without ignoring the Makefile as well,
+# so just remember to put all executables in the dist/ directory.
+
+
 dist/*
 .cache/*
 tests/logs/*
