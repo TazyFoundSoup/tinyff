@@ -16,7 +16,7 @@ SRC = $(shell find src -name "*.c")
 ifeq ($(USE_HOSTED),1)
 INCLUDES += -Iinclude/bridges
 CFLAGS += -DUSE_HOSTED
-SRC += $(wildcard include/bridges/*.c)
+SRC += $(shell find src/bridges -name "*.c")
 endif
 
 OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
