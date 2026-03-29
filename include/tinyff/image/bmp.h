@@ -46,7 +46,7 @@ typedef struct {
     
 } ff_bmp_ctx;
 
-typedef ff_result (*ff_bmp_section_handler_ptr)(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
+typedef ff_result (*ff_bmp_section_handler_ptr)(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx* bmp_ctx);
 
 typedef struct {
     // Even though the types in bitmaps are invisible (they don't have labels)
@@ -58,10 +58,10 @@ typedef struct {
     ff_bmp_section_handler_ptr handler;
 } ff_bmp_section_handler;
 
-ff_result ff_bmp_header_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
-ff_result ff_bmp_info_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
-ff_result ff_bmp_color_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
-ff_result ff_bmp_data_handler(uint8_t *buf, size_t len, ff_bmp_ctx* ctx);
+ff_result ff_bmp_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx* bmp_ctx);
+ff_result ff_bmp_info_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx* bmp_ctx);
+ff_result ff_bmp_color_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx* bmp_ctx);
+ff_result ff_bmp_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx* bmp_ctx);
 
 const ff_bmp_section_handler ff_bmp_section_handlers[] = {
     
@@ -73,8 +73,8 @@ const ff_bmp_section_handler ff_bmp_section_handlers[] = {
     {NULL, NULL} // Terminator
 }; 
 
-ff_result ff_bmp_isvalid(ff_stream *stream);
-ff_result ff_open_bmp(ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_valid);
+ff_result ff_bmp_isvalid(ff_ctx* ctx, ff_stream *stream);
+ff_result ff_open_bmp(ff_ctx* ctx, ff_stream *stream, ff_bmp_ctx **out_ctx, ff_flag require_valid);
 
 
 #endif // BMP_H_
