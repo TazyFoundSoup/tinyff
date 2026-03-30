@@ -1,9 +1,11 @@
 #ifndef RESULT_H
 #define RESULT_H
 
+#include <stdbool.h>
+
 typedef enum {
-    FF_TRUE = 0,
-    FF_FALSE = 1
+    FF_TRUE = true,
+    FF_FALSE = false
 } FF_FLAG;
 
 typedef enum {

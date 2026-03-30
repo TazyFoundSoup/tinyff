@@ -2,7 +2,6 @@
 #define STREAM_H
 
 #include <stddef.h>
-#include <stdio.h>
 
 
 #define FF_NULL_STREAM {0}
