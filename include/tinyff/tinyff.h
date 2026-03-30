@@ -1,13 +1,8 @@
-// TODO: Include all formats
+#include <tinyff/common.h>
+#include <tinyff/stream.h>
+#include <tinyff/result.h>
 
+#define FF_BASE \
+    bool valid; \
+    ff_result last_error;
 
-
-#include "common.h"
-#include "stream.h"
-
-typedef struct {
-    // Debug settings
-    ff_stream* ff_debug_stream;
-    ff_flag ff_debug_enabled;
-    
-} ff_ctx;
