@@ -1,6 +1,7 @@
 #include <tinyff/image/bmp.h>
 #include <tinyff/dbg.h>
 #include <tinyff/result.h>
+#include <tinyff/dbg.h>
 
 ff_result ff_bmp_isvalid(ff_ctx* ctx, ff_stream* stream) 
 {
