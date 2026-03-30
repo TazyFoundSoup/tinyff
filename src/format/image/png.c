@@ -1,86 +1,94 @@
 #include <tinyff/image/png.h>
-#include <tinyff/result.h>
-#include <tinyff/common.h>
-#include <tinyff/dbg.h>
 
 // External
 #include <ext/tinf.h>
 
-ff_result ff_png_isvalid(ff_stream *stream)
+const ff_png_chunk_handler ff_png_chunk_handlers[] = {
+    {"IHDR", ff_png_header_handler},
+    {"IDAT", ff_png_data_handler},
+    {"IEND", ff_png_end_handler},
+    {"PLTE", ff_png_palette_handler},   
+
+    // From now on, the handlers will be for ancillary chunks
+    {"tRNS", ff_png_trans_handler},
+
+    {NULL, NULL} // Terminator
+}; 
+
+ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream)
 {
-    ff_dprintf("png: validating signature\n");
+    ff_dprintf(ctx, "png: validating signature\n");
     
     char raw_sig[8];
     if (stream->read(raw_sig, 8, stream->user) != 8) {
-        ff_dprintf("png: failed to read signature bytes\n");
+        ff_dprintf(ctx, "png: failed to read signature bytes\n");
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
-    ff_dprintf(
-        "png: signature read: %02X %02X %02X %02X %02X %02X %02X %02X\n",
-        raw_sig[0], raw_sig[1], raw_sig[2], raw_sig[3],
-        raw_sig[4], raw_sig[5], raw_sig[6], raw_sig[7]
+    ff_dprintf(ctx,
+        // TODO: Write raw sig to the log in hex cause formatting needs reworking
+        "png: signature read\n"
     );
 
     if (memcmp(raw_sig, PNG_SIGNATURE, 8) != 0) {
-        ff_dprintf("png: signature mismatch\n");
+        ff_dprintf(ctx, "png: signature mismatch\n");
         return FF_RESULT_ERROR_INVALID_PNG_SIGNATURE;
     }
 
-    ff_dprintf("png: signature valid\n");
+    ff_dprintf(ctx, "png: signature valid\n");
 
     return FF_RESULT_OK;
 }
 
-ff_result ff_open_png(ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid)
+ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid)
 {
     
-    ff_png_ctx *ctx = malloc(sizeof(ff_png_ctx));
-    if (!ctx) {
+    ff_png_ctx *png_ctx = ctx->allocator.ff_alloc(sizeof(ff_png_ctx));
+    if (!png_ctx) {
         // lol, i actually set the last_error field here. now its just this comment. im so frickin dumb bruh
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
 
     // Init
-    memset(ctx, 0, sizeof(*ctx));
-    ctx->image_mode = FF_PNG_MODE_NONE;
-    ctx->raw = stream;
-    ctx->last_error = FF_RESULT_OK;
+    memset(png_ctx, 0, sizeof(*png_ctx));
+    png_ctx->image_mode = FF_PNG_MODE_NONE;
+    png_ctx->raw = stream;
+    png_ctx->last_error = FF_RESULT_OK;
 
 
-    if (ctx->raw->read == NULL) {
-        ff_dprintf("png: stream failed to read\n");
-        free(ctx);
+    if (png_ctx->raw->read == NULL) {
+        ff_dprintf(ctx, "png: stream failed to read\n");
+        ctx->allocator.ff_free(png_ctx);
         return FF_RESULT_ERROR_READ_FILE_FAILURE;
     }
 
-    ff_dprintf("png: stream read successfully\n");
+    ff_dprintf(ctx, "png: stream read successfully\n");
 
     if (require_valid) {
-        ff_result res = ff_png_isvalid(ctx->raw);
+        ff_result res = ff_png_isvalid(ctx, png_ctx->raw);
         if (res != FF_RESULT_OK) {
-            ff_dprintf("png: validation failed (%d)\n", res);
-            free(ctx);
+            ff_dprintf(ctx, "png: validation failed\n");
+            ctx->allocator.ff_free(png_ctx);
             return res;
         }
     }
 
-    ff_dprintf("png: validation passed\n");
-    ctx->valid = true;
+    ff_dprintf(ctx, "png: validation passed\n");
+    png_ctx->valid = true;
 
-    *out_ctx = ctx;
-    ff_dprintf("png: open_png reached WIP end\n");
+    *out_ctx = png_ctx;
+    ff_dprintf(ctx, "png: open_png reached WIP end\n");
 
-    ctx->last_error = FF_RESULT_WARN_NO_IMPL;
+    png_ctx->last_error = FF_RESULT_WARN_NO_IMPL;
     return FF_RESULT_WARN_NO_IMPL;
 }
 
 // Handlers
 
-inline uint16_t ff_png_bpp(ff_png_ctx *ctx)
+inline uint16_t ff_png_bpp(ff_png_ctx *png_ctx)
 {
-    int16_t byte_depth = ctx->bit_depth / 8;
-    switch (ctx->color_type) {
+    int16_t byte_depth = png_ctx->bit_depth / 8;
+    switch (png_ctx->color_type) {
         case 0: // Grayscale
             return byte_depth * 1; // Gray
         case 2: // Truecolor
@@ -96,109 +104,110 @@ inline uint16_t ff_png_bpp(ff_png_ctx *ctx)
     }
 }
 
-ff_result ff_png_header_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    ff_dprintf("png: IHDR chunk received (len=%zu)\n", len);
+    ff_dprintf(ctx, "png: IHDR chunk received (len=%zu)\n");
 
     if (len != 13) {
-        ff_dprintf("png: invalid IHDR length\n");
+        ff_dprintf(ctx, "png: invalid IHDR length\n");
 
-        ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
+        png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
     uint32_t w = get_big_endian(buf);
     uint32_t h = get_big_endian(buf + 4);
 
-    ff_dprintf("Width:              %u\n", w);
-    ff_dprintf("Height:             %u\n", h);
-    ff_dprintf("Bit depth:          %u\n", buf[8]);
-    ff_dprintf("Color type:         %u\n", buf[9]);
-    ff_dprintf("Compression method: %u\n", buf[10]);
-    ff_dprintf("Filter method:      %u\n", buf[11]);
-    ff_dprintf("Interlace method:   %u\n", buf[12]);
+    // TODO: Do formatting.
+    //ff_dprintf("Width:              %u\n", w);
+    //ff_dprintf("Height:             %u\n", h);
+    //ff_dprintf("Bit depth:          %u\n", buf[8]);
+    //ff_dprintf("Color type:         %u\n", buf[9]);
+    //ff_dprintf("Compression method: %u\n", buf[10]);
+    //ff_dprintf("Filter method:      %u\n", buf[11]);
+    //ff_dprintf("Interlace method:   %u\n", buf[12]);
 
-    ctx->width = w;
-    ctx->height = h;
-    ctx->bit_depth = buf[8];
-    ctx->color_type = buf[9];
-    ctx->interlace_method = buf[12];
+    png_ctx->width = w;
+    png_ctx->height = h;
+    png_ctx->bit_depth = buf[8];
+    png_ctx->color_type = buf[9];
+    png_ctx->interlace_method = buf[12];
 
-    ff_dprintf("png: IHDR stored in context\n");
+    ff_dprintf(ctx, "png: IHDR stored in context\n");
 
-    ctx->last_error = FF_RESULT_OK;
+    png_ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }
 
-ff_result ff_png_palette_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+ff_result ff_png_palette_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
+    ff_dprintf(ctx, "png: PLTE chunk received\n");
     
     if (len % 3 != 0) {
-        ff_dprintf("png: invalid PLTE length\n");
+        ff_dprintf(ctx, "png: invalid PLTE length\n");
 
-        ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
+        png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
     uint16_t num_entries = len / 3;
-    ff_dprintf("png: PLTE contains %u palette entries\n", num_entries);
+    ff_dprintf(ctx, "png: PLTE contains [number of entries] palette entries\n"); // TODO: Format this with the actual number of entries
     
-    ctx->palette_size = num_entries;
-    ctx->palette = malloc(len);
-    if (!ctx->palette) {
-        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    png_ctx->palette_size = num_entries;
+    png_ctx->palette = ctx->allocator.ff_alloc(len);
+    if (!png_ctx->palette) {
+        png_ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
     
     for (uint16_t i = 0; i < num_entries; i++) {
         // There's 4 bytes per entry just because if there's
         // a tRNS chunk later, we can just fill in the alpha values
-        ctx->palette[i * 4 + 0] = buf[i * 3 + 0]; // R
-        ctx->palette[i * 4 + 1] = buf[i * 3 + 1]; // G
-        ctx->palette[i * 4 + 2] = buf[i * 3 + 2]; // B
+        png_ctx->palette[i * 4 + 0] = buf[i * 3 + 0]; // R
+        png_ctx->palette[i * 4 + 1] = buf[i * 3 + 1]; // G
+        png_ctx->palette[i * 4 + 2] = buf[i * 3 + 2]; // B
     }
     
-    ctx->last_error = FF_RESULT_OK;
+    png_ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }   
 
-ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    ff_dprintf("png: IDAT chunk received (len=%zu)\n", len);
+    ff_dprintf(ctx, "png: IDAT chunk received\n");
 
     uint8_t *uncompressed_data = NULL;
     
     // Getting the size is weird cause it could the sample count
     // could be different based on color type and bit depth
-    size_t uncompressed_size = ctx->width * ctx->height * ff_png_bpp(ctx);
+    size_t uncompressed_size = png_ctx->width * png_ctx->height * ff_png_bpp(png_ctx);
 
-    uncompressed_data = malloc(uncompressed_size);
+    uncompressed_data = ctx->allocator.ff_alloc(uncompressed_size);
 
     if (!uncompressed_data) {
-        ff_dprintf("png: failed to allocate memory for uncompressed data\n");
+        ff_dprintf(ctx, "png: failed to allocate memory for uncompressed data\n");
 
-        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        png_ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
     
     if (tinf_uncompress(uncompressed_data, (unsigned int *)uncompressed_size, buf, len) != TINF_OK) {
-        ff_dprintf("png: failed to uncompress IDAT data\n");
-        free(uncompressed_data);
+        ff_dprintf(ctx, "png: failed to uncompress IDAT data\n");
+        ctx->allocator.ff_free(uncompressed_data);
 
-        ctx->last_error = FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
+        png_ctx->last_error = FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
         return FF_RESULT_ERROR_DECOMPRESSION_FAILURE;
     }
 
-    ff_dprintf("png: IDAT data uncompressed successfully\n");
+    ff_dprintf(ctx, "png: IDAT data uncompressed successfully\n");
 
     // Now we parse the uncompressed data into our pixel buffer
     // However I don't understand Adam7 so interlaced images are not supported yet
-    if (ctx->interlace_method != 0) {
-        ff_dprintf("png: interlaced images are not supported yet\n");
-        free(uncompressed_data);
+    if (png_ctx->interlace_method != 0) {
+        ff_dprintf(ctx, "png: interlaced images are not supported yet\n");
+        ctx->allocator.ff_free(uncompressed_data);
 
-        ctx->last_error = FF_RESULT_WARN_NO_IMPL;
+        png_ctx->last_error = FF_RESULT_WARN_NO_IMPL;
         return FF_RESULT_WARN_NO_IMPL;
     }
 
@@ -208,22 +217,22 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
 
     // Filtering
 
-    size_t bpp = ff_png_bpp(ctx);
-    uint8_t *reconstructed_buf = (uint8_t *) malloc(ctx->width * bpp); // This is the current reconstructed scanline
-    uint8_t *previous_row = (uint8_t *) calloc(ctx->width * bpp, 1); // This is the prior scanline (reconstructed)
+    size_t bpp = ff_png_bpp(png_ctx);
+    uint8_t *reconstructed_buf = (uint8_t *) ctx->allocator.ff_alloc(png_ctx->width * bpp); // This is the current reconstructed scanline
+    uint8_t *previous_row = (uint8_t *) ctx->allocator.ff_calloc(png_ctx->width * bpp, 1); // This is the prior scanline (reconstructed)
 
 
 
     // Iterate over every scanline
-    for (int iline = 0; (uint32_t) iline < ctx->height; iline++) {
+    for (int iline = 0; (uint32_t) iline < png_ctx->height; iline++) {
         // Make some variables so it's not hella unreadable
-        size_t scanline_start = iline * (1 + (ctx->width * bpp));
+        size_t scanline_start = iline * (1 + (png_ctx->width * bpp));
         uint8_t filter_type = uncompressed_data[scanline_start];
         uint8_t *raw = &uncompressed_data[scanline_start + 1];
 
         
         // Now I need to iterate over the entire scanline and apply the filter
-        for (size_t x = 0; x < ctx->width * bpp; x++) {
+        for (size_t x = 0; x < png_ctx->width * bpp; x++) {
             uint8_t left = (x >= bpp) ? reconstructed_buf[x - bpp] : 0;
             uint8_t above = previous_row[x];
             uint8_t diagonal = (x >= bpp) ? previous_row[x - bpp] : 0;
@@ -244,9 +253,9 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                 case 4: // Paeth Predictor
                     {
                         int p = left + above - diagonal;
-                        int pa = abs(p - left);
-                        int pb = abs(p - above);
-                        int pc = abs(p - diagonal);
+                        int pa = FF_ABS(p - left);
+                        int pb = FF_ABS(p - above);
+                        int pc = FF_ABS(p - diagonal);
 
                         if (pa <= pb && pa <= pc) 
                             reconstructed_buf[x] = raw[x] + left;
@@ -257,29 +266,29 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                     }
                     break;
                 default: // Unknown
-                    ff_dprintf("png: unsupported scanline filter method '%d'", filter_type);
-                    free(reconstructed_buf);
-                    free(previous_row);
-                    free(uncompressed_data);
+                    ff_dprintf(ctx, "png: unsupported scanline filter method"); // TODO: Format
+                    ctx->allocator.ff_free(reconstructed_buf);
+                    ctx->allocator.ff_free(previous_row);
+                    ctx->allocator.ff_free(uncompressed_data);
 
-                    ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
+                    png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
                     return FF_RESULT_ERROR_INVALID_FILE;
             }
 
         }
 
-        if (ctx->color_type != 3) {
+        if (png_ctx->color_type != 3) {
                 // For non-indexed color types, we can directly store the pixels
                 // Allocate pixel buffer if not already done
-                if (ctx->data.pixels == NULL) {
-                    ctx->data.pixels = malloc(ctx->width * ctx->height * bpp);
-                    if (!ctx->data.pixels) {
-                        ff_dprintf("png: failed to allocate memory for pixel data\n");
-                        free(reconstructed_buf);
-                        free(previous_row);
-                        free(uncompressed_data);
+                if (png_ctx->data.pixels == NULL) {
+                    png_ctx->data.pixels = ctx->allocator.ff_alloc(png_ctx->width * png_ctx->height * bpp);
+                    if (!png_ctx->data.pixels) {
+                        ff_dprintf(ctx, "png: failed to allocate memory for pixel data\n");
+                        ctx->allocator.ff_free(reconstructed_buf);
+                        ctx->allocator.ff_free(previous_row);
+                        ctx->allocator.ff_free(uncompressed_data);
 
-                        ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+                        png_ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
                         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
                     }
                 }
@@ -287,10 +296,10 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
                 // Now we put the current one into previous and into the pixels buffer
                 
                 // Copy current reconstructed to pixels in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (ok ill shut up )
-                memcpy(&ctx->data.pixels[iline * ctx->width * bpp], reconstructed_buf, ctx->width * bpp);
+                memcpy(&png_ctx->data.pixels[iline * png_ctx->width * bpp], reconstructed_buf, png_ctx->width * bpp);
 
                 // Copy current reconstructed to previous_row for next iteration (you thought i was going to yap more about png huh, you fool, you are so predictable)
-                memcpy(previous_row, reconstructed_buf, ctx->width * bpp);
+                memcpy(previous_row, reconstructed_buf, png_ctx->width * bpp);
 
         } else {
             // Hissy fit time
@@ -299,24 +308,24 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
             // Indexed color handling
             // Allocate index map if not already done
 
-            if (ctx->data.imap == NULL) {
-                ctx->data.imap = malloc(ctx->width * ctx->height);
-                if (!ctx->data.imap) {
-                    ff_dprintf("png: failed to allocate memory for index map\n");
-                    free(reconstructed_buf);
-                    free(previous_row);
-                    free(uncompressed_data);
+            if (png_ctx->data.imap == NULL) {
+                png_ctx->data.imap = ctx->allocator.ff_alloc(png_ctx->width * png_ctx->height);
+                if (!png_ctx->data.imap) {
+                    ff_dprintf(ctx, "png: failed to allocate memory for index map\n");
+                    ctx->allocator.ff_free(reconstructed_buf);
+                    ctx->allocator.ff_free(previous_row);
+                    ctx->allocator.ff_free(uncompressed_data);
 
-                    ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
+                    png_ctx->last_error = FF_RESULT_ERROR_MEMORY_ALLOCATION;
                     return FF_RESULT_ERROR_MEMORY_ALLOCATION;
                 }
             }
 
             // Copy current reconstructed to index map in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (he he he ha )
-            memcpy(&ctx->data.imap[iline * ctx->width], reconstructed_buf, ctx->width);
+            memcpy(&png_ctx->data.imap[iline * png_ctx->width], reconstructed_buf, png_ctx->width);
 
             // Copy current reconstructed to previous_row for next iteration
-            memcpy(previous_row, reconstructed_buf, ctx->width);
+            memcpy(previous_row, reconstructed_buf, png_ctx->width);
         }
         
     }
@@ -326,36 +335,37 @@ ff_result ff_png_data_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
     // We must study the patterns of their ways
     // The buddha has truly been testing us
     
-    free(uncompressed_data);
-    free(reconstructed_buf);
-    free(previous_row);
+    ctx->allocator.ff_free(uncompressed_data);
+    ctx->allocator.ff_free(reconstructed_buf);
+    ctx->allocator.ff_free(previous_row);
 
-    ctx->last_error = FF_RESULT_OK;
+    png_ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_WARN_NO_IMPL;
 }
 
-ff_result ff_png_end_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+ff_result ff_png_end_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {   
     (void)buf; // Unused (for now)
+    (void)len;
     
-    ff_dprintf("png: IEND chunk received (len=%zu)\n", len);
-    ff_dprintf("png: all chunks received\n");
+    ff_dprintf(ctx, "png: IEND chunk received\n"); // TODO: Maybe format?
+    ff_dprintf(ctx, "png: all chunks received\n");
 
-    ctx->valid = true;
-    ctx->last_error = FF_RESULT_OK;
+    png_ctx->valid = true;
+    png_ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
 }
 
-ff_result ff_png_trans_handler(uint8_t *buf, size_t len, ff_png_ctx *ctx)
+ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
     (void)buf; // Unused (for now)
     
-    ff_dprintf("png: PLTE chunk received (len=%zu)\n", len);
+    ff_dprintf(ctx, "png: PLTE chunk received\n"); // TODO: Format
 
-    if (ctx->color_type == 0) { // Grayscale
+    if (png_ctx->color_type == 0) { // Grayscale
         if (len != 2) {
-            ff_dprintf("png: invalid tRNS length for grayscale image\n");
-            ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
+            ff_dprintf(ctx, "png: invalid tRNS length for grayscale image\n");
+            png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
             return FF_RESULT_ERROR_INVALID_FILE;
         }
     }
