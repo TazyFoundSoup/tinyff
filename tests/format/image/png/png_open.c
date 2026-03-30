@@ -1,32 +1,42 @@
+#include <stdlib.h>
+#include <tinyff/tinyff.h>
 #include <tinyff/image/png.h>
-#include <bridges/stdio/stream.h>
+#include <bridges/stdio/stream_bridge.h>
 #include <stdio.h>
 
-ff_result fftest_rgb2x2() {
-    FILE* file = fopen("assets/rgb2x2.png", "rb");    
-    if (!file) return FF_RESULT_ERROR_INVALID_FILE;
-
-    ff_stream stream = ff_create_file_stream(file);
-    if (stream.user == NULL) {
-        fclose(file);
+ff_result fftest_rgb2x2(ff_ctx* ctx) {
+    FILE* file = fopen("tests/format/image/png/assets/rgb2x2.png", "rb");
+    if (!file) {
+        printf("file failed to open\n");
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
-    ff_png_ctx* ctx = NULL;
-    ff_result res = ff_open_png(&stream, &ctx, FF_ENABLE);
+    ff_stream stream = ff_create_file_stream(file);
+
+    ff_png_ctx* png_ctx = NULL;
+    ff_result res = ff_open_png(ctx, &stream, &png_ctx, FF_ENABLE);
+
+    fclose(file);
 
     return res;
 }
 
-
 int main() {
-    ff_result res = fftest_rgb2x2();
+    ff_allocator alloc = { malloc, free, calloc };
+    ff_ctx* ctx = ff_init(&alloc);
 
-    if (res == FF_RESULT_WARN_NO_IMPL) { // This is only because I'm still busy. yall just jealous im 13 and better than like 80% of the people who have ever lived at this point in time.
+    ff_stream out = ff_create_file_stream(stdout);
+    ff_set_debug_stream(&out, ctx);
+
+    ff_result res = fftest_rgb2x2(ctx);
+
+    if (res == FF_RESULT_WARN_NO_IMPL) {
         printf("Works!\n");
     } else {
         printf("Doesn't work :(\n");
     }
+
+    ff_cleanup(ctx);
 
     return 0;
 }
