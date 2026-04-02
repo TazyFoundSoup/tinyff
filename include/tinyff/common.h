@@ -64,10 +64,4 @@ typedef struct {
 ff_ctx* ff_init(ff_allocator* allocator);
 void ff_cleanup(ff_ctx* ctx);
 
-
-// Small math functions
-// TODO: Implement a full math library for tinyff
-
-#define FF_ABS(a) (((a) < 0) ? -(a) : (a))
-
 #endif

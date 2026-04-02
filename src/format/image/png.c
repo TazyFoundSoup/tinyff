@@ -253,9 +253,9 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
                 case 4: // Paeth Predictor
                     {
                         int p = left + above - diagonal;
-                        int pa = FF_ABS(p - left);
-                        int pb = FF_ABS(p - above);
-                        int pc = FF_ABS(p - diagonal);
+                        int pa = ff_absi(p - left);
+                        int pb = ff_absi(p - above);
+                        int pc = ff_absi(p - diagonal);
 
                         if (pa <= pb && pa <= pc) 
                             reconstructed_buf[x] = raw[x] + left;
