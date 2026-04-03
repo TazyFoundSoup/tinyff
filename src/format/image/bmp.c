@@ -19,7 +19,7 @@ ff_result ff_bmp_isvalid(ff_ctx* ctx, ff_stream* stream)
 
     if (memcmp(raw_sig, BMP_SIGNATURE, 2) != 0) {
         ff_dprintf(ctx, "bmp: signature mismatch\n");
-        return FF_RESULT_ERROR_INVALID_PNG_SIGNATURE;
+        return FF_RESULT_ERROR_INVALID_BMP_SIGNATURE;
     }
 
     ff_dprintf(ctx, "bmp: signature valid\n");
