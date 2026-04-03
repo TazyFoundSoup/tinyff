@@ -64,10 +64,8 @@ ff_result ff_open_bmp(ff_ctx* ctx, ff_stream *stream, ff_bmp_ctx **out_ctx, ff_f
     return FF_RESULT_WARN_NO_IMPL;
 }
 
-ff_result ff_bmp_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx *bmp_ctx) {
-    (void) buf;
-    (void) bmp_ctx;
-
+ff_result ff_bmp_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx *bmp_ctx)
+{
     if (len != FF_BMP_HEADER_SIZE) {
         ff_dprintf(ctx, "bmp: bitmap header is not correct size (expected 14, got [n length])\n"); // TODO: formatting
         bmp_ctx->last_error = FF_RESULT_ERROR_INVALID_BMP_HEADER;
