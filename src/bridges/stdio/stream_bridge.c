@@ -6,7 +6,7 @@
 size_t ff_file_read(void *ptr, size_t size, void *user)
 {
     FILE *f = (FILE *)user;
-    return fread(ptr, size, 1, f);
+    return fread(ptr, 1, size, f);
 }
 
 size_t ff_file_write(const void *ptr, size_t size, void *user)
@@ -19,6 +19,7 @@ ff_stream ff_create_file_stream(FILE *f)
 {
     ff_stream stream;
     stream.read = ff_file_read;
+    stream.write = NULL;
     stream.user = (void *)f;
     return stream;
 }
