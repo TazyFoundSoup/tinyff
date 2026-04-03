@@ -16,19 +16,18 @@ typedef bool ff_flag;
 
 // Functions
 
-static inline uint32_t get_big_endian(const uint8_t *buffer) {
-    return (uint32_t)(buffer[0] << 24) |
-           (uint32_t)(buffer[1] << 16) |
-           (uint32_t)(buffer[2] << 8)  |
-           (uint32_t)(buffer[3]);
+static inline uint32_t ff_be32(const uint8_t *b) {
+    return ((uint32_t)b[0] << 24) |
+           ((uint32_t)b[1] << 16) |
+           ((uint32_t)b[2] << 8)  |
+           ((uint32_t)b[3]);
 }
 
-static inline uint32_t get_little_endian(const uint8_t *buffer)
-{
-    return (uint32_t)(buffer[0])       |
-           (uint32_t)(buffer[1] << 8)  |
-           (uint32_t)(buffer[2] << 16) |
-           (uint32_t)(buffer[3] << 24);
+static inline uint32_t ff_le32(const uint8_t *b) {
+    return ((uint32_t)b[0])       |
+           ((uint32_t)b[1] << 8)  |
+           ((uint32_t)b[2] << 16) |
+           ((uint32_t)b[3] << 24);
 }
 
 

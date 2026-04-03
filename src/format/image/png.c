@@ -1,3 +1,4 @@
+#include <tinyff/common.h>
 #include <tinyff/image/png.h>
 
 // External
@@ -115,8 +116,8 @@ ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ct
         return FF_RESULT_ERROR_INVALID_FILE;
     }
 
-    uint32_t w = get_big_endian(buf);
-    uint32_t h = get_big_endian(buf + 4);
+    uint32_t w = ff_be32(buf);
+    uint32_t h = ff_be32(buf + 4);
 
     // TODO: Do formatting.
     //ff_dprintf("Width:              %u\n", w);
