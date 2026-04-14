@@ -51,6 +51,16 @@ static inline int ff_memcmp(const void *a, const void *b, size_t n)
     return 0;
 }
 
+static inline void ff_memcpy(void *dest, const void *src, size_t n)
+{
+    uint8_t *pd = (uint8_t *)dest;
+    const uint8_t *ps = (const uint8_t *)src;
+    for (size_t i = 0; i < n; i++) {
+        pd[i] = ps[i];
+    }
+}
+
+
 // Context bases
 // Default
 
