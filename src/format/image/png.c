@@ -133,7 +133,7 @@ ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_f
     ff_dprintf(ctx, "png: calling dispatcher\n");
     
     ff_result res = ff_png_dispatch(ctx, stream, png_ctx);
-    if (res != FF_RESULT_OK) {
+    if (res != FF_RESULT_OK && res != FF_RESULT_WARN_NO_IMPL) {
         ctx->allocator.ff_free(png_ctx);
         return res;
     }
@@ -141,8 +141,8 @@ ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_f
     *out_ctx = png_ctx;
     ff_dprintf(ctx, "png: open_png reached WIP end\n");
 
-    png_ctx->last_error = FF_RESULT_WARN_NO_IMPL;
-    return FF_RESULT_WARN_NO_IMPL;
+    png_ctx->last_error = FF_RESULT_OK;
+    return FF_RESULT_OK;
 }
 
 // Handlers
@@ -403,7 +403,7 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
     ctx->allocator.ff_free(previous_row);
 
     png_ctx->last_error = FF_RESULT_OK;
-    return FF_RESULT_WARN_NO_IMPL;
+    return FF_RESULT_OK;
 }
 
 ff_result ff_png_end_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
