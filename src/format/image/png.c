@@ -449,4 +449,24 @@ ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx
 }
 
 
-// TODO: Add ff_close_png
+ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx)
+{
+    if (!png_ctx) return FF_RESULT_OK;
+    
+    if (png_ctx->data.pixels) {
+        ctx->allocator.ff_free(png_ctx->data.pixels);
+        png_ctx->data.pixels = NULL;
+        ff_dprintf(ctx, "png: successfully freed pixels\n");
+    }
+    
+    if (png_ctx->data.imap) {
+        ctx->allocator.ff_free(png_ctx->data.imap);
+        png_ctx->data.imap = NULL;
+        ff_dprintf(ctx, "png: successfully freed index map\n");
+    }
+    
+    ctx->allocator.ff_free(png_ctx);
+    ff_dprintf(ctx, "png: successfully freed png context\n");
+    
+    return FF_RESULT_OK;
+}
