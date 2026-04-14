@@ -17,11 +17,7 @@ ff_result fftest_rgb2x2(ff_ctx* ctx) {
     ff_result res = ff_open_png(ctx, &stream, &png_ctx, FF_ENABLE);
 
     fclose(file);
-    if (png_ctx) {
-        if (png_ctx->data.pixels) ctx->allocator.ff_free(png_ctx->data.pixels);
-        if (png_ctx->palette) ctx->allocator.ff_free(png_ctx->palette);
-        ctx->allocator.ff_free(png_ctx);
-    }  // go free little butterfly
+    ff_close_png(ctx, png_ctx);
     return res;
 }
 
