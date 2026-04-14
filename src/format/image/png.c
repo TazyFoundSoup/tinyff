@@ -4,6 +4,8 @@
 // External
 #include <ext/tinf.h>
 
+static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png_ctx);
+
 const ff_png_chunk_handler ff_png_chunk_handlers[] = {
     {"IHDR", ff_png_header_handler},
     {"IDAT", ff_png_data_handler},
@@ -15,6 +17,57 @@ const ff_png_chunk_handler ff_png_chunk_handlers[] = {
 
     {NULL, NULL} // Terminator
 }; 
+
+static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png_ctx)
+{
+    while (1)
+    {   
+        // 1. Read the length
+        uint8_t chunk_length[4];
+        if (!stream->read(chunk_length, 4, stream->user)) {
+            png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
+            return FF_RESULT_ERROR_READ_FILE_FAILURE;
+        }
+        uint32_t length = ff_be32(chunk_length);
+        
+        // 2. Read the chunk type
+        uint8_t chunk_type[4];
+        if (!stream->read(chunk_type, 4, stream->user)) {
+            png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
+            return FF_RESULT_ERROR_READ_FILE_FAILURE;
+        }
+        
+        if (ff_memcmp(chunk_type, "IEND", 4) == 0) return FF_RESULT_OK;
+        
+        // 3. Read the chunk data (always, even if no handler)
+        uint8_t* chunk_data = ctx->allocator.ff_alloc(length);
+        if (!chunk_data) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        if (!stream->read(chunk_data, length, stream->user)) {
+            ctx->allocator.ff_free(chunk_data);
+            png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
+            return FF_RESULT_ERROR_READ_FILE_FAILURE;
+        }
+        
+        // 4. Find and call the handler
+        for (int i = 0; ff_png_chunk_handlers[i].type != NULL; i++) {
+            if (ff_memcmp(chunk_type, ff_png_chunk_handlers[i].type, 4) == 0) {
+                if (ff_png_chunk_handlers[i].handler != NULL)
+                    ff_png_chunk_handlers[i].handler(ctx, chunk_data, length, png_ctx);
+                break;
+            }
+        }
+        
+        ctx->allocator.ff_free(chunk_data);
+        
+        // 5. Skip the CRC (for now)
+        // TODO: Validate CRC
+        uint8_t crc[4];
+        if (!stream->read(crc, 4, stream->user)) {
+            png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
+            return FF_RESULT_ERROR_READ_FILE_FAILURE;
+        }
+    }
+}
 
 ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream)
 {
@@ -77,6 +130,14 @@ ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_f
     ff_dprintf(ctx, "png: validation passed\n");
     png_ctx->valid = true;
 
+    ff_dprintf(ctx, "png: calling dispatcher\n");
+    
+    ff_result res = ff_png_dispatch(ctx, stream, png_ctx);
+    if (res != FF_RESULT_OK) {
+        ctx->allocator.ff_free(png_ctx);
+        return res;
+    }
+    
     *out_ctx = png_ctx;
     ff_dprintf(ctx, "png: open_png reached WIP end\n");
 
