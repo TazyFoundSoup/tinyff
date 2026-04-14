@@ -32,7 +32,7 @@ ff_ctx* ff_init(ff_allocator* allocator)
 
 void ff_cleanup(ff_ctx *ctx) {
     if (!ctx) return;
-    ff_dprintf(ctx, "goodbye from tinyff ;]");
+    ff_dprintf(ctx, "goodbye from tinyff ;]\n");
     ctx->allocator.ff_free(ctx);    
     
 }
