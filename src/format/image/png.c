@@ -192,7 +192,8 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
         return FF_RESULT_ERROR_MEMORY_ALLOCATION;
     }
     
-    if (tinf_uncompress(uncompressed_data, (unsigned int *)uncompressed_size, buf, len) != TINF_OK) {
+    unsigned int out_size = (unsigned int)uncompressed_size;
+    if (tinf_uncompress(uncompressed_data, &out_size, buf, len) != TINF_OK) {
         ff_dprintf(ctx, "png: failed to uncompress IDAT data\n");
         ctx->allocator.ff_free(uncompressed_data);
 
