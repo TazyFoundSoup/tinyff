@@ -66,6 +66,12 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
             png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
             return FF_RESULT_ERROR_READ_FILE_FAILURE;
         }
+        
+        uint32_t crc32 = ff_be32(crc);
+        if (tinf_crc32(chunk_data, length) != crc32) {
+            png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
+            return FF_RESULT_ERROR_INVALID_FILE;
+        }
     }
 }
 
