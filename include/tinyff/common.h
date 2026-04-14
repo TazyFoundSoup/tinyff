@@ -62,7 +62,7 @@ typedef struct {
 
 typedef struct {
     // Debug settings
-    ff_stream* ff_debug_stream;
+    ff_stream ff_debug_stream;
     ff_flag ff_debug_enabled;
     
     // Allocation

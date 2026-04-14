@@ -4,7 +4,7 @@
 #include <stddef.h>
 
 
-#define FF_NULL_STREAM {0}
+#define FF_NULL_STREAM (ff_stream){0}
 
 
 
