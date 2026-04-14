@@ -17,7 +17,11 @@ ff_result fftest_rgb2x2(ff_ctx* ctx) {
     ff_result res = ff_open_png(ctx, &stream, &png_ctx, FF_ENABLE);
 
     fclose(file);
-
+    if (png_ctx) {
+        if (png_ctx->data.pixels) ctx->allocator.ff_free(png_ctx->data.pixels);
+        if (png_ctx->palette) ctx->allocator.ff_free(png_ctx->palette);
+        ctx->allocator.ff_free(png_ctx);
+    }  // go free little butterfly
     return res;
 }
 
@@ -30,7 +34,7 @@ int main() {
 
     ff_result res = fftest_rgb2x2(ctx);
 
-    if (res == FF_RESULT_WARN_NO_IMPL) {
+    if (res == FF_RESULT_OK) {
         printf("Works!\n");
     } else {
         printf("Doesn't work :(\n");
