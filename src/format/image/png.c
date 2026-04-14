@@ -22,7 +22,6 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
 {
     while (1)
     {   
-        // 1. Read the length
         uint8_t chunk_length[4];
         if (!stream->read(chunk_length, 4, stream->user)) {
             png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
@@ -30,7 +29,6 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
         }
         uint32_t length = ff_be32(chunk_length);
         
-        // 2. Read the chunk type
         uint8_t chunk_type[4];
         if (!stream->read(chunk_type, 4, stream->user)) {
             png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
@@ -39,7 +37,6 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
         
         if (ff_memcmp(chunk_type, "IEND", 4) == 0) return FF_RESULT_OK;
         
-        // 3. Read the chunk data (always, even if no handler)
         uint8_t* chunk_data = ctx->allocator.ff_alloc(length);
         if (!chunk_data) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
         if (!stream->read(chunk_data, length, stream->user)) {
@@ -48,7 +45,6 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
             return FF_RESULT_ERROR_READ_FILE_FAILURE;
         }
         
-        // 4. Find and call the handler
         for (int i = 0; ff_png_chunk_handlers[i].type != NULL; i++) {
             if (ff_memcmp(chunk_type, ff_png_chunk_handlers[i].type, 4) == 0) {
                 if (ff_png_chunk_handlers[i].handler != NULL)
@@ -56,19 +52,28 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
                 break;
             }
         }
-        
+
+        uint8_t* crc_buf = ctx->allocator.ff_alloc(4 + length);
+        if (!crc_buf) {
+            ctx->allocator.ff_free(chunk_data);
+            return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        }
+        ff_memcpy(crc_buf, chunk_type, 4);
+        ff_memcpy(crc_buf + 4, chunk_data, length);
         ctx->allocator.ff_free(chunk_data);
-        
-        // 5. Skip the CRC (for now)
-        // TODO: Validate CRC
-        uint8_t crc[4];
-        if (!stream->read(crc, 4, stream->user)) {
+
+        uint8_t crc_bytes[4];
+        if (!stream->read(crc_bytes, 4, stream->user)) {
+            ctx->allocator.ff_free(crc_buf);
             png_ctx->last_error = FF_RESULT_ERROR_READ_FILE_FAILURE;
             return FF_RESULT_ERROR_READ_FILE_FAILURE;
         }
-        
-        uint32_t crc32 = ff_be32(crc);
-        if (tinf_crc32(chunk_data, length) != crc32) {
+
+        uint32_t expected = ff_be32(crc_bytes);
+        uint32_t actual = tinf_crc32(crc_buf, 4 + length);
+        ctx->allocator.ff_free(crc_buf);
+
+        if (actual != expected) {
             png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
             return FF_RESULT_ERROR_INVALID_FILE;
         }
