@@ -242,7 +242,7 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
     
     // Getting the size is weird cause it could the sample count
     // could be different based on color type and bit depth
-    size_t uncompressed_size = png_ctx->width * png_ctx->height * ff_png_bpp(png_ctx);
+    size_t uncompressed_size = png_ctx->height * (1 + png_ctx->width * ff_png_bpp(png_ctx));
 
     uncompressed_data = ctx->allocator.ff_alloc(uncompressed_size);
 
@@ -254,7 +254,7 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
     }
     
     unsigned int out_size = (unsigned int)uncompressed_size;
-    if (tinf_uncompress(uncompressed_data, &out_size, buf, len) != TINF_OK) {
+    if (tinf_uncompress(uncompressed_data, &out_size, buf + 2, len - 2) != TINF_OK) {
         ff_dprintf(ctx, "png: failed to uncompress IDAT data\n");
         ctx->allocator.ff_free(uncompressed_data);
 
@@ -436,3 +436,6 @@ ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx
 
     return FF_RESULT_WARN_NO_IMPL;
 }
+
+
+// TODO: Add ff_close_png

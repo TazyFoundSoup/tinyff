@@ -1,3 +1,4 @@
+#include <tinyff/stream.h>
 #include <tinyff/dbg.h>
 #include <tinyff/common.h>
 
@@ -22,7 +23,7 @@ ff_ctx* ff_init(ff_allocator* allocator)
     if (!ctx) return NULL;
 
     ctx->ff_debug_enabled = FF_DISABLE;
-    ctx->ff_debug_stream = NULL;
+    ctx->ff_debug_stream = FF_NULL_STREAM;
 
     ctx->allocator = *allocator;
 
