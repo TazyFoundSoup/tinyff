@@ -44,4 +44,15 @@ asan: CC=clang
 asan: CFLAGS += $(SANFLAGS)
 asan: clean all
 
-.PHONY: all clean debug release asan
+# Currently supporting:
+# Images
+# - png
+# - bmp (WIP)
+
+test-png: clean
+	$(MAKE) USE_HOSTED=1
+	$(CC) $(CFLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o png_test -Iinclude/bridges -Ldist -ltinyff && ./png_test
+
+test: test-png
+
+.PHONY: all clean debug release asan test test-png
