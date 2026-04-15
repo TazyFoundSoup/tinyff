@@ -1,9 +1,7 @@
 name: canary
-
 on:
   push:
     branches: [ "master" ]
-
 jobs:
   build:
     name: ${{ matrix.artifact }}
@@ -21,35 +19,30 @@ jobs:
           - os: windows-latest
             cc: gcc
             artifact: libtinyff-windows-x86_64.a
-
     steps:
       - uses: actions/checkout@v4
-
       - name: Build
         run: make CC=${{ matrix.cc }} USE_HOSTED=1
-
       - name: Copy artifact
         run: cp dist/libtinyff.a ${{ matrix.artifact }}
-
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: ${{ matrix.artifact }}
-
   release:
     name: Publish canary
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - uses: actions/download-artifact@v4
-
       - name: Delete existing canary
         run: gh release delete canary --yes --cleanup-tag || true
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GH_REPO: ${{ github.repository }}
-
       - name: Create canary release
         uses: softprops/action-gh-release@v2
         with:
@@ -60,6 +53,5 @@ jobs:
           body: |
             Automated canary build from `${{ github.sha }}`.
             Built on ${{ github.event.head_commit.timestamp }}.
-
             > ⚠️ This is a rolling prerelease. Not recommended for production use.
           files: "**/*.a"
