@@ -158,7 +158,7 @@ ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_f
 
 // Handlers
 
-inline uint16_t ff_png_bpp(ff_png_ctx *png_ctx)
+static inline uint16_t ff_png_bpp(ff_png_ctx *png_ctx)
 {
     int16_t byte_depth = png_ctx->bit_depth / 8;
     switch (png_ctx->color_type) {
@@ -284,6 +284,8 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
         png_ctx->last_error = FF_RESULT_WARN_NO_IMPL;
         return FF_RESULT_WARN_NO_IMPL;
     }
+    
+    png_ctx->image_mode = (png_ctx->color_type == 3) ? FF_PNG_MODE_PALETTE : FF_PNG_MODE_DIRECT_COLOR;
 
     // Now I am very inexperienced so I'm doing what I think is right
     // TODO: Review this code later
@@ -468,5 +470,89 @@ ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx)
     ctx->allocator.ff_free(png_ctx);
     ff_dprintf(ctx, "png: successfully freed png context\n");
     
+    return FF_RESULT_OK;
+}
+
+ff_result ff_png_normalize(ff_ctx *ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data, ff_flag consume)
+{   
+    if (png_ctx->bit_depth != 8) return FF_RESULT_WARN_NO_IMPL;
+    
+    ff_image_ctx* out_ctx = ctx->allocator.ff_alloc(sizeof(ff_image_ctx));
+    if (!out_ctx) return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+    
+    size_t pixel_count = png_ctx->width * png_ctx->height;
+    out_ctx->data = ctx->allocator.ff_alloc(sizeof(uint32_t) * pixel_count);
+    
+    if (png_ctx->image_mode == FF_PNG_MODE_DIRECT_COLOR) {
+        if (out_ctx->data == NULL) {
+            return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+        }
+        
+        uint8_t *src = png_ctx->data.pixels;
+        uint8_t *dst = (uint8_t *)out_ctx->data;
+        size_t bpp = ff_png_bpp(png_ctx);
+        
+        for (size_t i = 0; i < pixel_count; i++) {
+            uint8_t* s = src + i * bpp; // source pixel
+            uint8_t* d = dst + i * 4; // destination pixel
+            
+            uint8_t *R = &d[0];
+            uint8_t *G = &d[1];
+            uint8_t *B = &d[2];
+            uint8_t *A = &d[3];
+            
+            switch (png_ctx->color_type) {
+                case 0: // Grayscale
+                    *R = *G = *B = s[0];
+                    *A = 255;
+                    break;
+                case 2: // RGB
+                    *R = s[0];
+                    *G = s[1];
+                    *B = s[2];
+                    *A = 255;
+                    break;
+                case 4: // Grayscale w/ alpha
+                    *R = *G = *B = s[0];
+                    *A = s[1];
+                    break;
+                case 6: // RGBA
+                    *R = s[0];
+                    *G = s[1];
+                    *B = s[2];
+                    *A = s[3];
+                    break;
+                default:
+                    ctx->allocator.ff_free(out_ctx->data);
+                    ctx->allocator.ff_free(out_ctx);
+                    return FF_RESULT_ERROR_INVALID_FILE;
+            }
+        }
+        
+        
+        
+    } else if (png_ctx->image_mode == FF_PNG_MODE_PALETTE) {
+        //out_ctx->data = png_ctx->data.imap;
+        // NOTE: Since I need to resolve the imap and I don't wanna do that now
+        // and just wanna get v0.1.0 out, then I'm just gonna use the pixels.
+        ctx->allocator.ff_free(out_ctx->data);
+        ctx->allocator.ff_free(out_ctx);
+        return FF_RESULT_WARN_NO_IMPL;
+    } else {
+        ctx->allocator.ff_free(out_ctx->data);
+        ctx->allocator.ff_free(out_ctx);
+        return FF_RESULT_ERROR_INVALID_FILE;
+    }
+    
+    out_ctx->width = png_ctx->width;
+    out_ctx->height = png_ctx->height;
+    out_ctx->origin = FF_IMAGE_ORIGIN_PNG;
+    
+    *out_data = out_ctx;
+    
+    if (consume) {
+        ff_close_png(ctx, png_ctx);
+        (void)png_ctx;
+    }
     return FF_RESULT_OK;
 }

@@ -2,10 +2,8 @@
 #define PNG_H
 
 #include <stdint.h>
-#include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
-#include <stdlib.h>
 
 #include <tinyff/tinyff.h>
 #include <tinyff/common.h>
@@ -22,8 +20,8 @@ static const unsigned char PNG_SIGNATURE[8] = {
 
 typedef enum {
     FF_PNG_MODE_NONE = 0,
-    FF_PNG_MODE_DIRECT_COLOR, // pixels
-    FF_PNG_MODE_PALETTE       // palette
+    FF_PNG_MODE_DIRECT_COLOR = 1, // pixels
+    FF_PNG_MODE_PALETTE = -1       // palette
 } ff_png_mode;
 
 typedef struct {
@@ -58,10 +56,6 @@ typedef struct {
 
 } ff_png_ctx;
 
-// Small BpP helper function
-
-static inline uint16_t ff_png_bpp(ff_png_ctx *ctx);
-
 
 typedef ff_result (*ff_png_chunk_handler_ptr)(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx);
 
@@ -92,6 +86,6 @@ ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream);
 ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid);
 ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx);
 
-ff_result ff_png_normalize(ff_ctx* ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data);
+ff_result ff_png_normalize(ff_ctx* ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data, ff_flag consume);
 
 #endif
