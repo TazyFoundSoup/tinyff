@@ -1,0 +1,8 @@
+[book]
+title = "tinyff"
+authors = ["TazyFoundSoup"]
+language = "en"
+
+[preprocessor.embedify]
+footer.enable = true
+footer.message = "tinyff | [github](https://github.com/tazyfoundsoup/tinyff) | made with ❤️ by [watson](https://github.com/tazyfoundsoup)"
