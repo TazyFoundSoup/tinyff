@@ -5,8 +5,8 @@ OUTDIR = dist
 LIB = libtinyff.a
 
 INCLUDES = -Iinclude
-CFLAGS = -Wall -Wextra -Werror -std=c11 $(INCLUDES)
 
+BASE_CFLAGS = -Wall -Wextra -Werror -std=c11 $(INCLUDES)
 DEBUG_FLAGS = -g -O0
 RELEASE_FLAGS = -O2
 SANFLAGS = -fsanitize=address,undefined -g -O1
@@ -15,13 +15,13 @@ SRC = $(shell find src -name "*.c")
 
 ifeq ($(USE_HOSTED),1)
 INCLUDES += -Iinclude/bridges
-CFLAGS += -DUSE_HOSTED
+BASE_CFLAGS += -DUSE_HOSTED
 SRC += $(shell find src/bridges -name "*.c")
 endif
 
 OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
 
-all: $(OUTDIR)/$(LIB)
+all: release
 
 $(OUTDIR)/$(LIB): $(OBJ)
 	mkdir -p $(OUTDIR)
@@ -32,26 +32,21 @@ $(OUTDIR)/%.o: %.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OUTDIR)
+	rm -rf $(OUTDIR) png_test
 
-debug: CFLAGS += $(DEBUG_FLAGS)
-debug: clean all
+debug: CFLAGS = $(BASE_CFLAGS) $(DEBUG_FLAGS)
+debug: $(OUTDIR)/$(LIB)
 
-release: CFLAGS += $(RELEASE_FLAGS)
-release: clean all
+release: CFLAGS = $(BASE_CFLAGS) $(RELEASE_FLAGS)
+release: $(OUTDIR)/$(LIB)
 
-asan: CC=clang
-asan: CFLAGS += $(SANFLAGS)
-asan: clean all
-
-# Currently supporting:
-# Images
-# - png
-# - bmp (WIP)
+asan: CC = clang
+asan: CFLAGS = $(BASE_CFLAGS) $(SANFLAGS)
+asan: clean $(OUTDIR)/$(LIB)
 
 test-png: clean
-	$(MAKE) USE_HOSTED=1
-	$(CC) $(CFLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o png_test -Iinclude/bridges -Ldist -ltinyff && ./png_test
+	$(MAKE) USE_HOSTED=1 debug
+	$(CC) $(BASE_CFLAGS) $(DEBUG_FLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o png_test -Iinclude/bridges -Ldist -ltinyff && ./png_test
 
 test: test-png
 
