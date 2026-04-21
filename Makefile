@@ -7,7 +7,7 @@ LIB = libtinyff.a
 INCLUDES = -Iinclude
 
 BASE_CFLAGS = -Wall -Wextra -Werror -std=c11 $(INCLUDES)
-DEBUG_FLAGS = -g -O0
+DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
 RELEASE_FLAGS = -O2
 SANFLAGS = -fsanitize=address,undefined -g -O1
 
