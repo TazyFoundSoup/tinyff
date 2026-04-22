@@ -46,7 +46,7 @@ asan: clean $(OUTDIR)/$(LIB)
 
 test-png: clean
 	$(MAKE) USE_HOSTED=1 debug
-	$(CC) $(BASE_CFLAGS) $(DEBUG_FLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o png_test -Iinclude/bridges -Ldist -ltinyff && ./png_test
+	$(CC) $(BASE_CFLAGS) $(DEBUG_FLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o $(OUTDIR)/png_test -Iinclude/bridges -Ldist -ltinyff && ./$(OUTDIR)/png_test
 
 test: test-png
 
