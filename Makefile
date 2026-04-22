@@ -50,7 +50,15 @@ test-png: clean
 
 test: test-png
 
+# $(TEST) is passed in via `make gdb TEST=<test_name>`
+# NOTE: <test_name> should be the name of the test target's output binary
+#       inside the Makefile but cannot be the more generic 'test' target
+# 
+# 
+# 
+# WARNING: TEST does not have a default value
+
 gdb: debug
-	gdb -x debug/.gdbinit
-	
+	gdb -x debug/.gdbinit $(OUTDIR)/$(TEST)
+
 .PHONY: all clean debug release asan test test-png gdb
