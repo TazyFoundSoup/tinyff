@@ -50,4 +50,7 @@ test-png: clean
 
 test: test-png
 
-.PHONY: all clean debug release asan test test-png
+gdb: debug
+	gdb -x debug/.gdbinit
+	
+.PHONY: all clean debug release asan test test-png gdb
