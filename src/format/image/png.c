@@ -150,7 +150,7 @@ ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_f
     }
     
     *out_ctx = png_ctx;
-    ff_dprintf(ctx, "png: open_png reached WIP end\n");
+    ff_dprintf(ctx, "png: open_png reached end\n");
 
     png_ctx->last_error = FF_RESULT_OK;
     return FF_RESULT_OK;
