@@ -8,6 +8,12 @@
 #include <stddef.h>
 #include <tinyff/stream.h>
 
+#ifdef USE_BENCH
+
+#include <tinyff/bench.h>
+
+#endif
+
 // Flags
 typedef bool ff_flag;
 
@@ -77,6 +83,10 @@ typedef struct {
     
     // Allocation
     ff_allocator allocator;
+    
+    #ifdef USE_BENCH
+    ff_bench bench;
+    #endif
 } ff_ctx;
 
 ff_ctx* ff_init(ff_allocator* allocator);
