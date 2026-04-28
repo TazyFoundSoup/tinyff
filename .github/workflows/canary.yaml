@@ -24,7 +24,7 @@ jobs:
       - name: Build
         run: make CC=${{ matrix.cc }} USE_HOSTED=1
       - name: Copy artifact
-        run: cp dist/libtinyff.a ${{ matrix.artifact }}
+        run: cp build/libtinyff.a ${{ matrix.artifact }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
