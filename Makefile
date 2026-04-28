@@ -5,7 +5,7 @@ OUTDIR = build
 BENCH_OUT = $(OUTDIR)/bench
 LIB = libtinyff.a
 
-ALL_CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude -Ibench
+ALL_CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
 
 DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
 RELEASE_FLAGS = -O2
@@ -17,6 +17,11 @@ BENCH_SRC = $(shell find bench/src -name "*.c")
 ifeq ($(USE_HOSTED),1)
 ALL_CFLAGS += -DUSE_HOSTED -Iinclude/bridges
 SRC += $(shell find src/bridges -name "*.c")
+endif
+
+ifeq ($(USE_BENCH),1)
+ALL_CFLAGS += -DUSE_BENCH -Ibench
+SRC += $(shell find bench/src -name "*.c")
 endif
 
 OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
