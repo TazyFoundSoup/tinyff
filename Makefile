@@ -1,7 +1,7 @@
 CC ?= gcc
 AR ?= ar
 
-OUTDIR = dist
+OUTDIR = build
 BENCH_OUT = $(OUTDIR)/bench
 LIB = libtinyff.a
 
@@ -46,7 +46,7 @@ asan: clean $(OUTDIR)/$(LIB)
 
 test-png: clean
 	$(MAKE) USE_HOSTED=1 debug
-	$(CC) $(ALL_CFLAGS) $(DEBUG_FLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o $(OUTDIR)/png_test -Ldist -ltinyff && ./$(OUTDIR)/png_test
+	$(CC) $(ALL_CFLAGS) $(DEBUG_FLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o $(OUTDIR)/png_test -L$(OUTDIR) -ltinyff && ./$(OUTDIR)/png_test
 
 test: test-png
 

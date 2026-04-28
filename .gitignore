@@ -2,7 +2,7 @@
 # so just remember to put all executables in the dist/ directory.
 
 
-dist/*
+build/*
 .cache/*
 tests/logs/*
 bench/dist/*
