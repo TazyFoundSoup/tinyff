@@ -10,7 +10,31 @@
 
 #ifdef USE_BENCH
 
-#include <tinyff/bench.h>
+#include <bench.h>
+
+#define FF_BENCH_MARK(ctx, label) \
+    do { \
+        if (ctx) \
+            ff_bench_mark(&(ctx)->bench, (label)); \
+    } while (0)
+
+#define FF_BENCH_START(ctx, label) \
+    do { \
+        if (ctx) \
+            ff_bench_start(&(ctx)->bench, (label)); \
+    } while (0)
+
+#define FF_BENCH_END(ctx) \
+    do { \
+        if (ctx) \
+            ff_bench_end(&(ctx)->bench); \
+    } while (0)
+
+#else
+
+#define FF_BENCH_MARK(ctx, label) do {} while (0)
+#define FF_BENCH_START(ctx, label) do {} while (0)
+#define FF_BENCH_END(ctx) do {} while (0)
 
 #endif
 
@@ -76,7 +100,7 @@ typedef struct {
     void* (*ff_calloc)(size_t count, size_t size);
 } ff_allocator;
 
-typedef struct {
+typedef struct ff_ctx {
     // Debug settings
     ff_stream ff_debug_stream;
     ff_flag ff_debug_enabled;
