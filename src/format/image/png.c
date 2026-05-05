@@ -47,8 +47,10 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
         
         for (int i = 0; ff_png_chunk_handlers[i].type != NULL; i++) {
             if (ff_memcmp(chunk_type, ff_png_chunk_handlers[i].type, 4) == 0) {
-                if (ff_png_chunk_handlers[i].handler != NULL)
+                if (ff_png_chunk_handlers[i].handler != NULL) {
+                    FF_BENCH_MARK(ctx, ff_png_chunk_handlers[i].type);
                     ff_png_chunk_handlers[i].handler(ctx, chunk_data, length, png_ctx);
+                }
                 break;
             }
         }
@@ -81,7 +83,9 @@ static ff_result ff_png_dispatch(ff_ctx* ctx, ff_stream* stream, ff_png_ctx *png
 }
 
 ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream)
-{
+{   
+    FF_BENCH_MARK(ctx, "ff_png_isvalid");
+    
     ff_dprintf(ctx, "png: validating signature\n");
     
     char raw_sig[8];
@@ -106,7 +110,9 @@ ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream)
 }
 
 ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid)
-{
+{   
+    FF_BENCH_START(ctx, "png");
+    FF_BENCH_MARK(ctx, "ff_open_png");
     
     ff_png_ctx *png_ctx = ctx->allocator.ff_alloc(sizeof(ff_png_ctx));
     if (!png_ctx) {
@@ -469,6 +475,8 @@ ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx)
     
     ctx->allocator.ff_free(png_ctx);
     ff_dprintf(ctx, "png: successfully freed png context\n");
+    
+    FF_BENCH_END(ctx);
     
     return FF_RESULT_OK;
 }

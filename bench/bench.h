@@ -24,17 +24,14 @@ typedef struct {
 
 // These need to be inline so they are fast
 
-static inline ff_bench ff_bench_start(const char* label) {
-    ff_bench b;
-    b.label = label;
-    b._start = clock();
-    b._end = 0;
-    
-    // Markers
-    b._mcount = 0;
-    
-    return b;
+static inline void ff_bench_start(ff_bench *b, const char* label) {
+    b->label = label;
+    b->_start = clock();
+    b->_end = 0;
+    b->_mcount = 0;
+
 }
+
 
 static inline void ff_bench_end(ff_bench *b) {
     b->_end = clock();
