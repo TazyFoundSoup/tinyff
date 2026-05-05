@@ -6,6 +6,8 @@
 
 #define FF_BENCH_MAX_MARKERS 32
 
+typedef struct ff_ctx ff_ctx;
+
 typedef struct {
     const char *label;
     clock_t tick;
