@@ -5,7 +5,6 @@
 build/*
 .cache/*
 tests/logs/*
-bench/dist/*
 
 # Ignore generated book from mdbook
 docs/book/
