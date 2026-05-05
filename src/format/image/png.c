@@ -442,7 +442,7 @@ ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx
 {
     (void)buf; // Unused (for now)
     
-    ff_dprintf(ctx, "png: PLTE chunk received\n"); // TODO: Format
+    ff_dprintf(ctx, "png: tRNS chunk received\n"); // TODO: Format
 
     if (png_ctx->color_type == 0) { // Grayscale
         if (len != 2) {
@@ -451,7 +451,6 @@ ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx
             return FF_RESULT_ERROR_INVALID_FILE;
         }
     }
-    (void)buf; // Unused (for now)
 
     return FF_RESULT_WARN_NO_IMPL;
 }
