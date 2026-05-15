@@ -22,5 +22,5 @@ ff_result ff_dprintf(ff_ctx* ctx, const char *msg)
     }
     
     ctx->ff_debug_stream.write(msg, ff_strlen(msg), ctx->ff_debug_stream.user);
-    return FF_RESULT_OK; # result_ok means the result is ok
+    return FF_RESULT_OK; // result_ok means the result is ok
 }
