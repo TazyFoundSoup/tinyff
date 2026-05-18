@@ -11,8 +11,4 @@ docs/book/
 docs/book/*
 
 # Coverage outputs
-.coverage
-coverage/
-*.gcda
-*.gcov
-*.lcov
+coverage.info
