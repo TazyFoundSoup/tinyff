@@ -90,6 +90,13 @@ static inline void ff_memcpy(void *dest, const void *src, size_t n)
     }
 }
 
+static inline void *ff_memset(void *dest, int ch, size_t count) {
+    unsigned char *p = (unsigned char *)dest;
+    while (count--) {
+        *p++ = (unsigned char)ch;
+    }
+    return dest;
+}
 
 // Context bases
 // Default
