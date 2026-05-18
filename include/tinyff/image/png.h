@@ -3,7 +3,6 @@
 
 #include <stdint.h>
 #include <stdbool.h>
-#include <string.h>
 
 #include <tinyff/tinyff.h>
 #include <tinyff/common.h>
