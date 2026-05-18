@@ -99,7 +99,7 @@ ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream)
         "png: signature read\n"
     );
 
-    if (memcmp(raw_sig, PNG_SIGNATURE, 8) != 0) {
+    if (ff_memcmp(raw_sig, PNG_SIGNATURE, 8) != 0) {
         ff_dprintf(ctx, "png: signature mismatch\n");
         return FF_RESULT_ERROR_INVALID_PNG_SIGNATURE;
     }
@@ -121,7 +121,7 @@ ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_f
     }
 
     // Init
-    memset(png_ctx, 0, sizeof(*png_ctx));
+    ff_memset(png_ctx, 0, sizeof(*png_ctx));
     png_ctx->image_mode = FF_PNG_MODE_NONE;
     png_ctx->raw = stream;
     png_ctx->last_error = FF_RESULT_OK;
@@ -378,10 +378,10 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
                 // Now we put the current one into previous and into the pixels buffer
                 
                 // Copy current reconstructed to pixels in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (ok ill shut up )
-                memcpy(&png_ctx->data.pixels[iline * png_ctx->width * bpp], reconstructed_buf, png_ctx->width * bpp);
+                ff_memcpy(&png_ctx->data.pixels[iline * png_ctx->width * bpp], reconstructed_buf, png_ctx->width * bpp);
 
                 // Copy current reconstructed to previous_row for next iteration (you thought i was going to yap more about png huh, you fool, you are so predictable)
-                memcpy(previous_row, reconstructed_buf, png_ctx->width * bpp);
+                ff_memcpy(previous_row, reconstructed_buf, png_ctx->width * bpp);
 
         } else {
             // Hissy fit time
@@ -404,10 +404,10 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
             }
 
             // Copy current reconstructed to index map in the context of the png graphical method of storing visual data also known as an image which is trademarked by the png development community as a way to store visual data in a compressed format known as the PNG format (he he he ha )
-            memcpy(&png_ctx->data.imap[iline * png_ctx->width], reconstructed_buf, png_ctx->width);
+            ff_memcpy(&png_ctx->data.imap[iline * png_ctx->width], reconstructed_buf, png_ctx->width);
 
             // Copy current reconstructed to previous_row for next iteration
-            memcpy(previous_row, reconstructed_buf, png_ctx->width);
+            ff_memcpy(previous_row, reconstructed_buf, png_ctx->width);
         }
         
     }
