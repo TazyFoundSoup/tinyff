@@ -111,13 +111,17 @@ ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream)
 
 ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid)
 {   
+    bool dej = true; // You need to be dej
     FF_BENCH_START(ctx, "png");
     FF_BENCH_MARK(ctx, "ff_open_png");
     
     ff_png_ctx *png_ctx = ctx->allocator.ff_alloc(sizeof(ff_png_ctx));
     if (!png_ctx) {
         // lol, i actually set the last_error field here. now its just this comment. im so frickin dumb bruh
-        return FF_RESULT_ERROR_MEMORY_ALLOCATION;
+
+        // oven says: You need to believe in your self, you are not defined based on your mistakes but based on the end result
+        
+        return FF_RESULT_ERROR_MEMORY_ALLOCATION; // FF_RESULT_ERROR_MEMORY_ALLOCATION means that the error was unknown error
     }
 
     // Init
