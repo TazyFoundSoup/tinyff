@@ -5,7 +5,7 @@ OUTDIR = build
 BENCH_OUT = $(OUTDIR)/bench
 LIB = libtinyff.a
 
-ALL_CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
+ALL_CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude --coverage
 
 DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
 RELEASE_FLAGS = -O2
@@ -37,7 +37,7 @@ $(OUTDIR)/%.o: %.c
 	$(CC) $(ALL_CFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OUTDIR) png_test
+	rm -rf $(OUTDIR) png_test coverage.info .coverage
 
 debug: CFLAGS = $(DEBUG_FLAGS)
 debug: $(OUTDIR)/$(LIB)
@@ -63,4 +63,12 @@ bench: $(OUTDIR)/$(LIB)
 	$(CC) $(ALL_CFLAGS) $(RELEASE_FLAGS) $(BENCH_SRC) -o $(BENCH_OUT)/bench -L$(OUTDIR) -ltinyff
 	$(BENCH_OUT)/bench
 
-.PHONY: all clean debug release asan test test-png gdb bench
+coverage: clean
+	$(MAKE) USE_HOSTED=1 debug
+	$(CC) $(ALL_CFLAGS) $(DEBUG_FLAGS) -DUSE_HOSTED tests/format/image/png/png_open.c -o $(OUTDIR)/png_test -L$(OUTDIR) -ltinyff
+	./$(OUTDIR)/png_test || true
+	lcov --capture --directory . --output-file coverage.info
+	lcov --remove coverage.info '/usr/*' --output-file coverage.info --ignore-errors unused
+	lcov --list coverage.info
+
+.PHONY: all clean debug release asan test test-png gdb bench coverage

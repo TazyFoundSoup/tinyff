@@ -9,3 +9,10 @@ tests/logs/*
 # Ignore generated book from mdbook
 docs/book/
 docs/book/*
+
+# Coverage outputs
+.coverage
+coverage/
+*.gcda
+*.gcov
+*.lcov

@@ -440,19 +440,19 @@ ff_result ff_png_end_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *
 
 ff_result ff_png_trans_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    (void)buf; // Unused (for now)
-    
-    ff_dprintf(ctx, "png: tRNS chunk received\n"); // TODO: Format
+    ff_dprintf(ctx, "png: tRNS chunk received\n");
 
-    if (png_ctx->color_type == 0) { // Grayscale
-        if (len != 2) {
-            ff_dprintf(ctx, "png: invalid tRNS length for grayscale image\n");
-            png_ctx->last_error = FF_RESULT_ERROR_INVALID_FILE;
-            return FF_RESULT_ERROR_INVALID_FILE;
+    if (png_ctx->color_type == 3) { // indexed
+        size_t count = len;
+        if (count > png_ctx->palette_size)
+            count = png_ctx->palette_size;
+
+        for (size_t i = 0; i < count; i++) {
+            png_ctx->palette[i * 4 + 3] = buf[i];
         }
     }
 
-    return FF_RESULT_WARN_NO_IMPL;
+    return FF_RESULT_OK;
 }
 
 
