@@ -74,5 +74,4 @@ coverage: clean
 	@echo ""
 	@echo "HTML report generated at coverage/index.html"
 	@echo "Opening with browser..."
-	xdg-open coverage/index.html
 .PHONY: all clean debug release asan test test-png gdb bench coverage
