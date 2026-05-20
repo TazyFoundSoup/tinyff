@@ -480,6 +480,7 @@ ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx)
     
     return FF_RESULT_OK;
 }
+
 ff_result ff_write_chunk(ff_stream *stream, const char *type, uint8_t *buf, size_t len)
 {
     stream->write(stream, 4, type);
@@ -487,6 +488,23 @@ ff_result ff_write_chunk(ff_stream *stream, const char *type, uint8_t *buf, size
     stream->write(stream, len, buf);
     stream->write(stream, 4, (uint32_t*)0); // TODO: Implement actual CRC calculation (use ff_write_be32)
     return FF_RESULT_OK;
+}
+
+ff_result ff_encode_png(ff_ctx *ctx, ff_png_ctx *png_ctx, ff_stream *stream)
+{   
+    FF_BENCH_START(ctx, "png");
+    FF_BENCH_MARK(ctx, "ff_encode_png");
+
+    stream->write(stream, 8, PNG_SIGNATURE);
+    
+    // TODO: Actually write the PNG data
+    // For now I'll void the parameters
+    (void)ctx;
+    (void)png_ctx;
+    
+    FF_BENCH_END(ctx);
+    
+    return FF_RESULT_WARN_NO_IMPL;
 }
 
 ff_result ff_png_normalize(ff_ctx *ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data, ff_flag consume)
