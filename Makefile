@@ -37,7 +37,7 @@ $(OUTDIR)/%.o: %.c
 	$(CC) $(ALL_CFLAGS) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -rf $(OUTDIR) png_test coverage.info .coverage
+	rm -rf $(OUTDIR) png_test coverage coverage.info .coverage
 
 debug: CFLAGS = $(DEBUG_FLAGS)
 debug: $(OUTDIR)/$(LIB)
@@ -69,6 +69,10 @@ coverage: clean
 	./$(OUTDIR)/png_test || true
 	lcov --capture --directory . --output-file coverage.info
 	lcov --remove coverage.info '/usr/*' --output-file coverage.info --ignore-errors unused
+	genhtml coverage.info --output-directory coverage
 	lcov --list coverage.info
-
+	@echo ""
+	@echo "HTML report generated at coverage/index.html"
+	@echo "Opening with browser..."
+	xdg-open coverage/index.html
 .PHONY: all clean debug release asan test test-png gdb bench coverage
