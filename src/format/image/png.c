@@ -1,3 +1,4 @@
+#include "tinyff/result.h"
 #include <tinyff/common.h>
 #include <tinyff/image/png.h>
 
@@ -477,6 +478,14 @@ ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx)
     
     FF_BENCH_END(ctx);
     
+    return FF_RESULT_OK;
+}
+ff_result ff_write_chunk(ff_stream *stream, const char *type, uint8_t *buf, size_t len)
+{
+    stream->write(stream, 4, type);
+    stream->write(stream, 4, (uint32_t*)&len);
+    stream->write(stream, len, buf);
+    stream->write(stream, 4, (uint32_t*)0); // TODO: Implement actual CRC calculation (use ff_write_be32)
     return FF_RESULT_OK;
 }
 
