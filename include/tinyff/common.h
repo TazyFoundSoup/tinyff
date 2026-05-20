@@ -60,6 +60,21 @@ static inline uint32_t ff_le32(const uint8_t *b) {
            ((uint32_t)b[3] << 24);
 }
 
+static inline void ff_write_be32(uint8_t *out, uint32_t v)
+{
+    out[0] = (v >> 24) & 0xFF;
+    out[1] = (v >> 16) & 0xFF;
+    out[2] = (v >> 8)  & 0xFF;
+    out[3] = (v)       & 0xFF;
+}
+
+static inline void ff_write_le32(uint8_t *out, uint32_t v)
+{
+    out[0] = (v)        & 0xFF;
+    out[1] = (v >> 8)   & 0xFF;
+    out[2] = (v >> 16)  & 0xFF;
+    out[3] = (v >> 24)  & 0xFF;
+}
 
 // Small stdlib helper functions
 static inline size_t ff_strlen(const char *str)
