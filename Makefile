@@ -73,5 +73,4 @@ coverage: clean
 	lcov --list coverage.info
 	@echo ""
 	@echo "HTML report generated at coverage/index.html"
-	@echo "Opening with browser..."
 .PHONY: all clean debug release asan test test-png gdb bench coverage
