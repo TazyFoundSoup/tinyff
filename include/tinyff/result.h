@@ -24,6 +24,7 @@ typedef enum {
     
     // Generic
     FF_RESULT_ERROR_OUT_OF_BOUNDS,
+    FF_RESULT_ERROR_NULL_PTR,
 
     // Media specific
     

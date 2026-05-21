@@ -9,7 +9,7 @@ size_t ff_file_read(void *ptr, size_t size, void *user)
     return fread(ptr, 1, size, f);
 }
 
-size_t ff_file_write(const void *ptr, size_t size, const void *user)
+size_t ff_file_write(const void *ptr, size_t size, void *user)
 {
     FILE *f = (FILE *)user;
     return fwrite(ptr, 1, size, f);

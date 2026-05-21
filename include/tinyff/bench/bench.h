@@ -1,8 +1,15 @@
+#ifdef USE_BENCH
+
 #ifndef TINYFF_BENCH_H_
 #define TINYFF_BENCH_H_
 
 #include <time.h>
 #include <tinyff/result.h>
+
+// Forward declarations
+typedef struct ff_ctx ff_ctx;
+ff_result ff_dprintf(ff_ctx* ctx, const char *msg, ...);
+
 
 #define FF_BENCH_MAX_MARKERS 32
 
@@ -54,4 +61,20 @@ static inline double ff_bench_seconds(const ff_bench *b) {
     return (double)(b->_end - b->_start) / CLOCKS_PER_SEC;
 }
 
+static inline void ff_bench_print(ff_ctx* ctx, const ff_bench *b)
+{
+    double total_ms = (double)(b->_end - b->_start) * 1000.0 / CLOCKS_PER_SEC;
+
+    ff_dprintf(ctx, "== bench: %s ==\n", b->label);
+
+    for (int i = 0; i < b->_mcount; i++) {
+        double ms = (double)(b->markers[i].tick - b->_start) * 1000.0 / CLOCKS_PER_SEC;
+        ff_dprintf(ctx, "  [%s] +%.3f ms\n", b->markers[i].label, ms);
+    }
+
+    ff_dprintf(ctx, "total: %.3f ms\n", total_ms);
+}
+
+
 #endif // TINYFF_BENCH_H
+#endif // USE_BENCH

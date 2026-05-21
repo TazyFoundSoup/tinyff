@@ -10,7 +10,7 @@
 
 #ifdef USE_BENCH
 
-#include <bench.h>
+#include <tinyff/bench/bench.h>
 
 #define FF_BENCH_MARK(ctx, label) \
     do { \

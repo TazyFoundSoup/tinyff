@@ -2,6 +2,7 @@
 #include <tinyff/tinyff.h>
 #include <tinyff/image/png.h>
 #include <bridges/stdio/stream_bridge.h>
+#include <tinyff/bench/bench.h>
 #include <stdio.h>
 
 ff_result fftest_rgb2x2(ff_ctx* ctx) {
@@ -35,6 +36,7 @@ ff_result fftest_lenna256(ff_ctx* ctx) {
 
     fclose(file);
     ff_close_png(ctx, png_ctx);
+    ff_bench_print(ctx, &(ctx)->bench);
     return res;
 }
 

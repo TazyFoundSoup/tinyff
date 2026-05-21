@@ -9,10 +9,7 @@
 
 
 typedef size_t (*ff_read_cb)(void *ptr, size_t size, void *user);
-typedef size_t (*ff_write_cb)(const void *ptr, size_t size, const void *user);
-//                                                            ^
-//                                                            |
-//                                                  there clang, happy now?
+typedef size_t (*ff_write_cb)(const void *ptr, size_t size, void *user);
 
 typedef struct {
     ff_read_cb read;

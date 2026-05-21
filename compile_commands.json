@@ -7,16 +7,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/bridges/stdio/stream_bridge.o",
+      "build/src/bridges/stdio/stream_bridge.o",
       "src/bridges/stdio/stream_bridge.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/bridges/stdio/stream_bridge.c",
-    "output": "/home/watson/tinyff/dist/src/bridges/stdio/stream_bridge.o"
+    "output": "/home/watson/tinyff/build/src/bridges/stdio/stream_bridge.o"
   },
   {
     "arguments": [
@@ -26,16 +26,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/common.o",
+      "build/src/common.o",
       "src/common.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/common.c",
-    "output": "/home/watson/tinyff/dist/src/common.o"
+    "output": "/home/watson/tinyff/build/src/common.o"
   },
   {
     "arguments": [
@@ -45,16 +45,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/stream.o",
+      "build/src/stream.o",
       "src/stream.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/stream.c",
-    "output": "/home/watson/tinyff/dist/src/stream.o"
+    "output": "/home/watson/tinyff/build/src/stream.o"
   },
   {
     "arguments": [
@@ -64,16 +64,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/dbg.o",
+      "build/src/dbg.o",
       "src/dbg.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/dbg.c",
-    "output": "/home/watson/tinyff/dist/src/dbg.o"
+    "output": "/home/watson/tinyff/build/src/dbg.o"
   },
   {
     "arguments": [
@@ -83,16 +83,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/format/image/bmp.o",
+      "build/src/format/image/bmp.o",
       "src/format/image/bmp.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/format/image/bmp.c",
-    "output": "/home/watson/tinyff/dist/src/format/image/bmp.o"
+    "output": "/home/watson/tinyff/build/src/format/image/bmp.o"
   },
   {
     "arguments": [
@@ -102,16 +102,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/format/image/png.o",
+      "build/src/format/image/png.o",
       "src/format/image/png.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/format/image/png.c",
-    "output": "/home/watson/tinyff/dist/src/format/image/png.o"
+    "output": "/home/watson/tinyff/build/src/format/image/png.o"
   },
   {
     "arguments": [
@@ -121,16 +121,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/tinyff.o",
+      "build/src/tinyff.o",
       "src/tinyff.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/tinyff.c",
-    "output": "/home/watson/tinyff/dist/src/tinyff.o"
+    "output": "/home/watson/tinyff/build/src/tinyff.o"
   },
   {
     "arguments": [
@@ -140,16 +140,16 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/ext/crc32.o",
+      "build/src/ext/crc32.o",
       "src/ext/crc32.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/ext/crc32.c",
-    "output": "/home/watson/tinyff/dist/src/ext/crc32.o"
+    "output": "/home/watson/tinyff/build/src/ext/crc32.o"
   },
   {
     "arguments": [
@@ -159,15 +159,15 @@
       "-Werror",
       "-std=c11",
       "-Iinclude",
-      "-Ibench",
+      "--coverage",
       "-O2",
       "-c",
       "-o",
-      "dist/src/ext/tinflate.o",
+      "build/src/ext/tinflate.o",
       "src/ext/tinflate.c"
     ],
     "directory": "/home/watson/tinyff",
     "file": "/home/watson/tinyff/src/ext/tinflate.c",
-    "output": "/home/watson/tinyff/dist/src/ext/tinflate.o"
+    "output": "/home/watson/tinyff/build/src/ext/tinflate.o"
   }
 ]
