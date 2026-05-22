@@ -7,7 +7,7 @@ LIB = libtinyff.a
 ALL_CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
 
 DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
-RELEASE_FLAGS = -O2
+RELEASE_FLAGS = -O3 -march=native -flto
 SANFLAGS = -fsanitize=address,undefined -g -O1
 
 COVERAGE_FLAGS = -fprofile-instr-generate -fcoverage-mapping
