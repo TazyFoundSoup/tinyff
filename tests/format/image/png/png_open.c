@@ -36,7 +36,9 @@ ff_result fftest_lenna256(ff_ctx* ctx) {
 
     fclose(file);
     ff_close_png(ctx, png_ctx);
+    #ifdef USE_BENCH
     ff_bench_print(ctx, &(ctx)->bench);
+    #endif
     return res;
 }
 

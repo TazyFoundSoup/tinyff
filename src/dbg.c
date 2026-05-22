@@ -53,9 +53,9 @@ static inline void ff_debug_flush(ff_ctx* ctx, char* buffer, size_t* idx)
     if (*idx == 0) return;
 
     ctx->ff_debug_stream.write(
-        &ctx->ff_debug_stream,
+        buffer,
         *idx,
-        (uint8_t*)buffer
+        ctx->ff_debug_stream.user
     );
 
     *idx = 0;

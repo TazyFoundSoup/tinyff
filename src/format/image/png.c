@@ -186,7 +186,7 @@ static inline uint16_t ff_png_bpp(ff_png_ctx *png_ctx)
 
 ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    ff_dprintf(ctx, "png: IHDR chunk received (len=%zu)\n");
+    ff_dprintf(ctx, "png: IHDR chunk received (len=%u)\n", (unsigned int)len);
 
     if (len != 13) {
         ff_dprintf(ctx, "png: invalid IHDR length\n");
@@ -198,14 +198,13 @@ ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ct
     uint32_t w = ff_be32(buf);
     uint32_t h = ff_be32(buf + 4);
 
-    // TODO: Do formatting.
-    //ff_dprintf("Width:              %u\n", w);
-    //ff_dprintf("Height:             %u\n", h);
-    //ff_dprintf("Bit depth:          %u\n", buf[8]);
-    //ff_dprintf("Color type:         %u\n", buf[9]);
-    //ff_dprintf("Compression method: %u\n", buf[10]);
-    //ff_dprintf("Filter method:      %u\n", buf[11]);
-    //ff_dprintf("Interlace method:   %u\n", buf[12]);
+    ff_dprintf(ctx, "Width:              %u\n", w);
+    ff_dprintf(ctx, "Height:             %u\n", h);
+    ff_dprintf(ctx, "Bit depth:          %u\n", buf[8]);
+    ff_dprintf(ctx, "Color type:         %u\n", buf[9]);
+    ff_dprintf(ctx, "Compression method: %u\n", buf[10]);
+    ff_dprintf(ctx, "Filter method:      %u\n", buf[11]);
+    ff_dprintf(ctx, "Interlace method:   %u\n", buf[12]);
 
     png_ctx->width = w;
     png_ctx->height = h;
@@ -221,7 +220,7 @@ ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ct
 
 ff_result ff_png_palette_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    ff_dprintf(ctx, "png: PLTE chunk received\n");
+    ff_dprintf(ctx, "png: PLTE chunk received (len = %u)\n", (unsigned int)len);
     
     if (len % 3 != 0) {
         ff_dprintf(ctx, "png: invalid PLTE length\n");
@@ -231,7 +230,7 @@ ff_result ff_png_palette_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_c
     }
 
     uint16_t num_entries = len / 3;
-    ff_dprintf(ctx, "png: PLTE contains [number of entries] palette entries\n"); // TODO: Format this with the actual number of entries
+    ff_dprintf(ctx, "png: PLTE contains %u palette entries\n", num_entries);
     
     png_ctx->palette_size = num_entries;
     png_ctx->palette = ctx->allocator.ff_alloc(len);
@@ -254,7 +253,7 @@ ff_result ff_png_palette_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_c
 
 ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx *png_ctx)
 {
-    ff_dprintf(ctx, "png: IDAT chunk received\n");
+    ff_dprintf(ctx, "png: IDAT chunk received (len = %u)\n", (unsigned int)len);
 
     uint8_t *uncompressed_data = NULL;
     
@@ -349,7 +348,7 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
                     }
                     break;
                 default: // Unknown
-                    ff_dprintf(ctx, "png: unsupported scanline filter method"); // TODO: Format
+                    ff_dprintf(ctx, "png: unsupported scanline filter method %u\n", (unsigned int)filter_type);
                     ctx->allocator.ff_free(reconstructed_buf);
                     ctx->allocator.ff_free(previous_row);
                     ctx->allocator.ff_free(uncompressed_data);
