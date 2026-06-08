@@ -24,6 +24,10 @@ ifeq ($(USE_BENCH),1)
 ALL_CFLAGS += -DUSE_BENCH
 endif
 
+ifeq ($(USE_THREAD),1)
+ALL_CFLAGS += -DUSE_THREAD
+endif
+
 OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
 
 all: release
