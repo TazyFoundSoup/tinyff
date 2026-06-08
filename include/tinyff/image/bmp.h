@@ -28,7 +28,7 @@ typedef struct {
     ff_stream *raw;
 
     
-    uint32_t file_size; // tbh, i actually have no idea why this is needed
+    uint32_t file_size;
     uint32_t data_offset;
     
     uint32_t width;
@@ -50,11 +50,6 @@ typedef struct {
 typedef ff_result (*ff_bmp_section_handler_ptr)(ff_ctx* ctx, uint8_t *buf, size_t len, ff_bmp_ctx* bmp_ctx);
 
 typedef struct {
-    // Even though the types in bitmaps are invisible (they don't have labels)
-    // I'll just keep them in for the sake of being in
-    // And I might just handle the section looping a bit differently
-    // And their names will be what I saw in the spec
-    
     const char* type;
     ff_bmp_section_handler_ptr handler;
 } ff_bmp_section_handler;

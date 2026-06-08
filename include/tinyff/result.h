@@ -40,8 +40,6 @@ typedef enum {
 
     // Memory
     FF_RESULT_ERROR_MEMORY_ALLOCATION,
-
-    // More will be created when more errors occur
 } ff_result;
 
 #endif

@@ -63,8 +63,7 @@ typedef struct {
     ff_png_chunk_handler_ptr handler;
 } ff_png_chunk_handler;
 
-// Handler declarations
-// Massive W.I.P
+// Chunk handler declarations
 
 // Required by definition
 ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // IHDR

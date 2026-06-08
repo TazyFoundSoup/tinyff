@@ -1,11 +1,8 @@
 #ifndef DBG_H
 #define DBG_H
 
-// Debug writes extra messages to a stream of the user's choice
-// To enable debug, the user needs to include this header
-// Then they can use the ff_set_debug_stream function to set the stream
-// And then use ff_dprintf to print debug messages
-// By default, debug is disabled
+// Debug logging writes to a user-supplied stream.
+// By default debug is disabled. Enable via ff_set_debug_stream.
 
 
 #define FF_DEBUG_ENABLED 1

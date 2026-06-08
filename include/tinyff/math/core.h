@@ -1,9 +1,7 @@
 #ifndef FF_MATH_H
 #define FF_MATH_H
 
-// NOTE: I'm not going to use macros until I feel like my trash code
-// might actually be used in prod. For now im using my beloved
-// static inline functions. Oh god dennis richie, i love you so bad <3
+// Static inline functions for type safety over macros
 
 
 

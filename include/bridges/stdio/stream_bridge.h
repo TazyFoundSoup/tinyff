@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <tinyff/stream.h>
 
-// Default reads for common types (just FILE for now, memory later)
+// File-backed stream I/O (memory stream coming soon)
 size_t ff_file_read(void *ptr, size_t size, void *user);
 size_t ff_file_write(const void *ptr, size_t size, void *user);
 

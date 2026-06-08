@@ -38,13 +38,12 @@
 
 #endif
 
-// Flags
 typedef bool ff_flag;
 
 #define FF_ENABLE   true
 #define FF_DISABLE  false
 
-// Functions
+// Byte-order conversion
 
 static inline uint32_t ff_be32(const uint8_t *b) {
     return ((uint32_t)b[0] << 24) |
@@ -76,7 +75,7 @@ static inline void ff_write_le32(uint8_t *out, uint32_t v)
     out[3] = (v >> 24)  & 0xFF;
 }
 
-// Small stdlib helper functions
+// Freestanding stdlib replacements
 static inline size_t ff_strlen(const char *str)
 {
     size_t len = 0;
@@ -113,8 +112,7 @@ static inline void *ff_memset(void *dest, int ch, size_t count) {
     return dest;
 }
 
-// Context bases
-// Default
+// Context and allocator
 
 typedef struct {
     void* (*ff_alloc)(size_t size);
@@ -123,11 +121,8 @@ typedef struct {
 } ff_allocator;
 
 typedef struct ff_ctx {
-    // Debug settings
     ff_stream ff_debug_stream;
     ff_flag ff_debug_enabled;
-    
-    // Allocation
     ff_allocator allocator;
     
     #ifdef USE_BENCH
