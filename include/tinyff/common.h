@@ -8,6 +8,10 @@
 #include <stddef.h>
 #include <tinyff/stream.h>
 
+#ifdef USE_THREAD
+#include <pthread.h>
+#endif
+
 #ifdef USE_BENCH
 
 #include <tinyff/bench/bench.h>
@@ -127,6 +131,11 @@ typedef struct ff_ctx {
     
     #ifdef USE_BENCH
     ff_bench bench;
+    #endif
+
+    #ifdef USE_THREAD
+    /* mutex to protect ctx internal mutable state when threads are enabled */
+    pthread_mutex_t ff_lock;
     #endif
 } ff_ctx;
 

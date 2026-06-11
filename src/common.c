@@ -6,6 +6,9 @@
 #include <stdlib.h>
 #endif
 
+#ifdef USE_THREAD
+#include <pthread.h>
+#endif
 
 // Initializes a new tinyff context.
 ff_ctx* ff_init(ff_allocator* allocator)
@@ -27,12 +30,25 @@ ff_ctx* ff_init(ff_allocator* allocator)
 
     ctx->allocator = *allocator;
 
+#ifdef USE_THREAD
+    /* initialize mutex used to protect ctx state */
+    if (pthread_mutex_init(&ctx->ff_lock, NULL) != 0) {
+        ctx->allocator.ff_free(ctx);
+        return NULL;
+    }
+#endif
+
     return ctx;
 }
 
 void ff_cleanup(ff_ctx *ctx) {
     if (!ctx) return;
     ff_dprintf(ctx, "goodbye from tinyff ;]\n");
+
+#ifdef USE_THREAD
+    pthread_mutex_destroy(&ctx->ff_lock);
+#endif
+
     ctx->allocator.ff_free(ctx);    
     
 }

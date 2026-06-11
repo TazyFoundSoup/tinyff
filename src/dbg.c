@@ -3,6 +3,10 @@
 #include <stdarg.h>
 #include <stdint.h>
 
+#ifdef USE_THREAD
+#include <pthread.h>
+#endif
+
 static size_t ff_internal_itoa(int value, char* buf)
 {
     char temp[12];
@@ -52,6 +56,9 @@ static inline void ff_debug_flush(ff_ctx* ctx, char* buffer, size_t* idx)
 {
     if (*idx == 0) return;
 
+#ifdef USE_THREAD
+    pthread_mutex_lock(&ctx->ff_lock);
+#endif
     ctx->ff_debug_stream.write(
         buffer,
         *idx,
@@ -59,6 +66,9 @@ static inline void ff_debug_flush(ff_ctx* ctx, char* buffer, size_t* idx)
     );
 
     *idx = 0;
+#ifdef USE_THREAD
+    pthread_mutex_unlock(&ctx->ff_lock);
+#endif
 }
 
 ff_result ff_dprintf(ff_ctx* ctx, const char *format, ...)
@@ -73,6 +83,10 @@ ff_result ff_dprintf(ff_ctx* ctx, const char *format, ...)
     char buffer[512];
     size_t buf_idx = 0;
     const char* p = format;
+
+#ifdef USE_THREAD
+    pthread_mutex_lock(&ctx->ff_lock);
+#endif
 
     while (*p) {
 
@@ -151,6 +165,10 @@ ff_result ff_dprintf(ff_ctx* ctx, const char *format, ...)
     }
 
     ff_debug_flush(ctx, buffer, &buf_idx);
+
+#ifdef USE_THREAD
+    pthread_mutex_unlock(&ctx->ff_lock);
+#endif
 
     va_end(args);
     return FF_RESULT_OK;
