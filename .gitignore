@@ -14,3 +14,8 @@ docs/book/*
 # Coverage outputs
 coverage.info
 coverage/
+
+# Other weird things
+*.swp
+*.tar.gz
+1
