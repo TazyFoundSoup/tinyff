@@ -384,11 +384,6 @@ ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx 
                 ff_memcpy(previous_row, reconstructed_buf, png_ctx->width * bpp);
 
         } else {
-            // Hissy fit time
-            // Just kidding
-            // I got all day because of the heatwave going on outside
-            // Indexed color handling
-            // Allocate index map if not already done
 
             if (png_ctx->data.imap == NULL) {
                 png_ctx->data.imap = ctx->allocator.ff_alloc(png_ctx->width * png_ctx->height);
