@@ -14,3 +14,6 @@ docs/book/*
 # Coverage outputs
 coverage.info
 coverage/
+
+# Compile commands (mainly just to keep root clean)
+compile_commands.json
