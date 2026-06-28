@@ -26,12 +26,12 @@
 
 // Static assertion fallback for c99
 #if defined(__STDC_VERSION__) && __STDC_VERSION__ >= 201112L
-    // static_assert already in version
 #   include <assert.h>
 #else
-    // c99 dummy
+#   define COMPAT_PASTE_INNER(a, b) a ## b
+#   define COMPAT_PASTE(a, b) COMPAT_PASTE_INNER(a, b)
 #   define COMPAT_STATIC_ASSERT(expr, msg) \
-        typedef char compat_assertion_failed##__LINE__[(expr) ? 1 : -1]
+        typedef char COMPAT_PASTE(compat_assertion_failed_, __LINE__)[(expr) ? 1 : -1]
 
 #   undef static_assert
 #   define static_assert(expr, msg) COMPAT_STATIC_ASSERT(expr, msg)
