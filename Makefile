@@ -14,6 +14,7 @@ COVERAGE_FLAGS = -fprofile-arcs -ftest-coverage
 COVERAGE_LDFLAGS = -fprofile-arcs -ftest-coverage
 
 SRC = $(shell find src -name "*.c")
+TEST = png_test
 
 ifeq ($(USE_HOSTED),1)
 ALL_CFLAGS += -DUSE_HOSTED -Iinclude/bridges
