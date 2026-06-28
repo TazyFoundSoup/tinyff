@@ -482,11 +482,11 @@ ff_result ff_close_png(ff_ctx* ctx, ff_png_ctx *png_ctx)
 
 ff_result ff_write_chunk(ff_stream *stream, const char *type, uint8_t *buf, size_t len)
 {
+    uint8_t be_len[4];
+    ff_write_be32(be_len, (uint32_t)len);
+
+    stream->write(be_len, 4, stream->user);
     stream->write(type, 4, stream->user);
-
-    uint32_t be_len = (uint32_t)len;
-    stream->write(&be_len, 4, stream->user);
-
     stream->write(buf, len, stream->user);
 
     uint32_t zero_crc = 0;
