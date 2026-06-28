@@ -19,3 +19,6 @@ coverage/
 *.swp
 *.tar.gz
 1
+
+# Compile commands (mainly just to keep root clean)
+compile_commands.json
