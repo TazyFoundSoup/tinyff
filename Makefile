@@ -4,7 +4,7 @@ AR ?= ar
 OUTDIR = build
 LIB = libtinyff.a
 
-ALL_CFLAGS = -Wall -Wextra -Werror -std=c11 -Iinclude
+ALL_CFLAGS = -Wall -Wextra -Werror -std=c99 -Iinclude
 
 DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
 RELEASE_FLAGS = -O3 -march=native -flto
