@@ -7,6 +7,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <tinyff/stream.h>
+#include <tinyff/compat.h>
 
 #ifdef USE_THREAD
 #include <pthread.h>
