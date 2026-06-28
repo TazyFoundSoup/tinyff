@@ -528,6 +528,14 @@ ff_result ff_encode_png(ff_ctx *ctx, ff_png_ctx *png_ctx, ff_stream *stream)
     return FF_RESULT_WARN_NO_IMPL;
 }
 
+ff_result ff_write_plte_chunk(ff_ctx *ctx, ff_stream *stream, ff_png_ctx *png_ctx)
+{
+    uint8_t* pltebuf = ctx->allocator.ff_alloc(png_ctx->palette_size * 3)
+    for (uint8_t entry = 0; entry < png_ctx->palette_size; entry += 4) {
+        
+    }  
+}
+
 ff_result ff_png_normalize(ff_ctx *ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data, ff_flag consume)
 {   
     if (png_ctx->bit_depth != 8) return FF_RESULT_WARN_NO_IMPL;

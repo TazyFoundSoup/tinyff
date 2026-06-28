@@ -65,9 +65,6 @@ typedef struct {
 } ff_png_chunk_handler;
 
 // Handler declarations
-// Massive W.I.P
-
-// Required by definition
 ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // IHDR
 ff_result ff_png_palette_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // PLTE
 ff_result ff_png_data_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ctx* png_ctx); // IDAT
@@ -83,6 +80,8 @@ extern const ff_png_chunk_handler ff_png_chunk_handlers[];
 // Encoding helpers
 ff_result ff_write_chunk(ff_stream *stream, const char *type, uint8_t *buf, size_t len);
 
+// Ancillary chunks encoding helpers
+ff_result ff_write_plte_chunk(ff_ctx *ctx, ff_stream *stream, ff_png_ctx *png_ctx);
 
 ff_result ff_png_isvalid(ff_ctx* ctx, ff_stream *stream);
 ff_result ff_open_png(ff_ctx* ctx, ff_stream *stream, ff_png_ctx **out_ctx, ff_flag require_valid);
