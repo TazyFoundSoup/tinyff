@@ -498,11 +498,26 @@ ff_result ff_encode_png(ff_ctx *ctx, ff_png_ctx *png_ctx, ff_stream *stream)
 
     stream->write(stream, 8, (void *)PNG_SIGNATURE);
     
-    // TODO: Actually write the PNG data
-    // For now I'll void the parameters
-    (void)ctx;
-    (void)png_ctx;
+    // IHDR
+    // TODO: Optimise this whole thing
+    uint8_t* ihdrbuf = ctx->allocator.ff_calloc(13, 1);
+
+    uint8_t bewidth[4];
+    ff_write_be32(bewidth, png_ctx->width);
+    stream->write(bewidth, 4, ihdrbuf);
+
+    uint8_t belength[4];
+    ff_write_be32(belength, png_ctx->height);
+    stream->write(belength, 4, ihdrbuf);
+
+    stream->write(&png_ctx->bit_depth, 1, ihdrbuf);
+    stream->write(&png_ctx->color_type, 1, ihdrbuf);
+    stream->write(0, 1, ihdrbuf); // PNG only support 1 compression method
+    stream->write(&png_ctx->filter_method, 1, ihdrbuf);
+    stream-> write(&png_ctx->interlace_method, 1, ihdrbuf);
     
+    ff_write_chunk(stream, "IHDR", ihdrbuf, 13);
+    ctx->allocator.ff_free(ihdrbuf);
     FF_BENCH_END(ctx);
     
     return FF_RESULT_WARN_NO_IMPL;
