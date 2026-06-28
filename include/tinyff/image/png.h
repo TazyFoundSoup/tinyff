@@ -36,6 +36,7 @@ typedef struct {
     // Color information
     uint8_t bit_depth;
     uint8_t color_type;
+    uint8_t filter_method;
 
     // Interlace method
     uint8_t interlace_method;
