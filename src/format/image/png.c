@@ -210,6 +210,7 @@ ff_result ff_png_header_handler(ff_ctx* ctx, uint8_t *buf, size_t len, ff_png_ct
     png_ctx->height = h;
     png_ctx->bit_depth = buf[8];
     png_ctx->color_type = buf[9];
+    png_ctx->filter_method = buf[11];
     png_ctx->interlace_method = buf[12];
 
     ff_dprintf(ctx, "png: IHDR stored in context\n");
