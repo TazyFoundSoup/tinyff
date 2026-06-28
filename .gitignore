@@ -22,3 +22,6 @@ coverage/
 
 # Compile commands (mainly just to keep root clean)
 compile_commands.json
+
+# Vim leftovers
+*.swp
