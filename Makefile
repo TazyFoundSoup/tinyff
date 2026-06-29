@@ -92,4 +92,7 @@ coverage: clean
 	lcov --remove coverage.info '/usr/*' --output-file coverage.info --ignore-errors unused
 	genhtml coverage.info --output-directory coverage
 
-.PHONY: all clean debug release asan test test-png gdb bench coverage
+format:
+	clang-format -i $(SRC) $(shell find include tests -name "*.h" -o -name "*.c")
+
+.PHONY: all clean debug release asan test test-png gdb bench coverage format
