@@ -62,7 +62,7 @@ test-png: clean
 test: test-png
 
 gdb: debug
-	gdb -x debug/.gdbinit $(OUTDIR)/$(TEST)
+	gdb -x scripts/.gdbinit $(OUTDIR)/$(TEST)
 
 bench: clean
 	$(MAKE) USE_HOSTED=1 USE_BENCH=1 release
