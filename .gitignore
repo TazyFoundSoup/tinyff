@@ -26,3 +26,8 @@ compile_commands.json
 # Vim leftovers
 *.swp
 1
+
+# Other weird things
+*.swp
+*.tar.gz
+1
