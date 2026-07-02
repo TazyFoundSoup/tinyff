@@ -30,6 +30,8 @@ ff_ctx* ff_init(ff_allocator* allocator)
 
     ctx->allocator = *allocator;
 
+
+// TODO: Clean up this thread mess (doesn't just apply to this file only)
 #ifdef USE_THREAD
     /* initialize mutex used to protect ctx state */
     if (pthread_mutex_init(&ctx->ff_lock, NULL) != 0) {
