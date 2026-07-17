@@ -45,25 +45,43 @@ Describe the issue with as much detail.
 #              Successful reporting will result in your name in ACKNOWLEDGMENTS.
 #              More details are in SECURITY.
 #
+# The brackets containing 'doe' are for specifying who is working on a patch for this issue.
+# Please leave as 'doe' unless you will like to work on it yourself (which in that case you put in your email). 
+# You can only chose you and 'doe' in the initial issue until someone replies to this issue with '!request'.
+# 
 # NOTE: Spamming useless issues or useless information will result in a block
 
-[TYPE/LEVEL] Issue title (doe)
-
-Describe the issue with as much details and related specs about the machine that ran it (if they apply)
-
-@@END-OF-ISSUE@@
 EOF
 
 	cp "$TMP_TEMPLATE" "$TMP_TEMPLATE.orig"
 	nano "$TMP_TEMPLATE"
 
+	# I just realised this if statement is useless with 'set -e'
+	# I wont bother making a trap. Im just not gonna touch it. Submitting patches fixing this will not be tolerated and will result in a personal talking to
 	if diff -q "$TMP_TEMPLATE" "$TMP_TEMPLATE.orig" >/dev/null; then
 		echo "error: no changes made. aborting..." >&2
 		rm -f "$TMP_TEMPLATE" "$TMP_TEMPLATE.orig"
 		exit 1
 	fi
 
-	rm "$TMP_TEMPLATE.orig" 
+	rm "$TMP_TEMPLATE.orig"
+
+	echo "success! please email the contents of $TMP_TEMPLATE to watson at me@tazy.dev while we get the lists working..."
 }
 
-case 
+case "$1" in
+	-t)
+		make_template
+		;;
+	-h)
+		show_help
+		;;
+	-r)
+		echo "replying is not supported yet. aborting. (please personally email the person of interest)"
+		exit 1
+		;;
+	*)
+		echo "unknown command. aborting."
+		exit 1
+		;;
+esac
