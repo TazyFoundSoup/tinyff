@@ -4,6 +4,10 @@ AR ?= ar
 OUTDIR = build
 LIB = libtinyff.a
 
+PREFIX ?= /usr/local
+INCLUDE_DIR ?= $(PREFIX)/include/tinyff
+LIB_DIR ?= $(PREFIX)/lib
+
 ALL_CFLAGS = -Wall -Wextra -Werror -std=c99 -Iinclude
 
 DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
@@ -92,4 +96,13 @@ coverage: clean
 format:
 	clang-format -i $(SRC) $(shell find include tests -name "*.h" -o -name "*.c")
 
-.PHONY: all clean debug release asan test test-png gdb bench coverage format
+install: release
+	install -d $(DESTDIR)$(INCLUDE_DIR)
+	install -d $(DESTDIR)$(LIB_DIR)
+
+	cp -R include/.  $(DESTDIR)$(INCLUDE_DIR)/
+	chmod -R a+r $(DESTDIR)$(INCLUDE_DIR)
+
+	install  -m 0644 $(OUTDIR)/$(LIB) $(DESTDIR)$(LIB_DIR)/
+
+.PHONY: all clean debug release asan test test-png gdb bench coverage format install
