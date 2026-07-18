@@ -73,6 +73,7 @@ bench: clean
 		-L$(OUTDIR) -ltinyff
 	./$(OUTDIR)/bench_png
 
+# TODO: Make coverage for every format test (maybe change sum syntax or do sum magic. future watson knows more than current watson does now)
 coverage: clean
 	$(MAKE) USE_HOSTED=1 CFLAGS="$(COVERAGE_FLAGS)" LDFLAGS="$(COVERAGE_LDFLAGS)" debug
 
