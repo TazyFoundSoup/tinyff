@@ -29,6 +29,12 @@ ifeq ($(USE_BENCH),1)
 ALL_CFLAGS += -DUSE_BENCH
 endif
 
+ifneq ($(SUDO_USER),)
+	__SUDO = true
+else
+	__SUDO = false
+endif
+
 OBJ = $(patsubst %.c,$(OUTDIR)/%.o,$(SRC))
 
 all: release
@@ -97,6 +103,11 @@ format:
 	clang-format -i $(SRC) $(shell find include tests -name "*.h" -o -name "*.c")
 
 install: release
+ifeq ($(__SUDO),false)
+		@echo "'make install' requires root priviledges via sudo! aborting."
+		@exit 1
+endif
+
 	install -d $(DESTDIR)$(INCLUDE_DIR)
 	install -d $(DESTDIR)$(LIB_DIR)
 
