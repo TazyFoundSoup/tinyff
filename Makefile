@@ -3,12 +3,14 @@ AR ?= ar
 
 OUTDIR = build
 LIB = libtinyff.a
+LIB_SHARED = libtinyff.so
 
 PREFIX ?= /usr/local
 INCLUDE_DIR ?= $(PREFIX)/include/tinyff
 LIB_DIR ?= $(PREFIX)/lib
 
 ALL_CFLAGS = -Wall -Wextra -Werror -std=c99 -Iinclude
+SHARED_FLAGS = -fPIC -shared
 
 DEBUG_FLAGS = -g -O0 -fno-omit-frame-pointer
 RELEASE_FLAGS = -O3 -march=native -flto
@@ -19,6 +21,11 @@ COVERAGE_LDFLAGS = -fprofile-arcs -ftest-coverage
 
 SRC = $(shell find src -name "*.c")
 TEST = png_test
+
+ifeq ($(USE_ALL),1)
+USE_HOSTED := 1
+USE_BENCH := 1
+endif
 
 ifeq ($(USE_HOSTED),1)
 ALL_CFLAGS += -DUSE_HOSTED -Iinclude/bridges
@@ -43,6 +50,10 @@ $(OUTDIR)/$(LIB): $(OBJ)
 	mkdir -p $(OUTDIR)
 	$(AR) rcs $@ $^
 
+$(OUTDIR)/$(LIB_SHARED): $(OBJ)
+	mkdir -p $(OUTDIR)
+	$(CC) $(SHARED_FLAGS) -o $@ $^
+
 $(OUTDIR)/%.o: %.c
 	mkdir -p $(dir $@)
 	$(CC) $(ALL_CFLAGS) $(CFLAGS) -c $< -o $@
@@ -55,6 +66,10 @@ debug: $(OUTDIR)/$(LIB)
 
 release: CFLAGS = $(RELEASE_FLAGS)
 release: $(OUTDIR)/$(LIB)
+
+shared:
+	$(MAKE) clean
+	$(MAKE) USE_ALL=1 CFLAGS="$(RELEASE_FLAGS) $(SHARED_FLAGS)" $(OUTDIR)/$(LIB_SHARED)
 
 asan: CC = clang
 asan: CFLAGS = $(SANFLAGS)
@@ -102,18 +117,22 @@ coverage: clean
 format:
 	clang-format -i $(SRC) $(shell find include tests -name "*.h" -o -name "*.c")
 
-install: release
+install:
+	$(MAKE) clean
+	$(MAKE) USE_ALL=1 shared
+	$(MAKE) USE_ALL=1 release
 ifeq ($(__SUDO),false)
 		@echo "'make install' requires root priviledges via sudo! aborting."
 		@exit 1
 endif
-
 	install -d $(DESTDIR)$(INCLUDE_DIR)
 	install -d $(DESTDIR)$(LIB_DIR)
 
 	cp -R include/.  $(DESTDIR)$(INCLUDE_DIR)/
 	chmod -R a+r $(DESTDIR)$(INCLUDE_DIR)
 
-	install  -m 0644 $(OUTDIR)/$(LIB) $(DESTDIR)$(LIB_DIR)/
+	install -m 0644 $(OUTDIR)/$(LIB) $(DESTDIR)$(LIB_DIR)/
+	install -m 0755 $(OUTDIR)/$(LIB_SHARED) $(DESTDIR)$(LIB_DIR)/
+	ldconfig
 
-.PHONY: all clean debug release asan test test-png gdb bench coverage format install
+.PHONY: all clean debug release shared asan test test-png gdb bench coverage format install
