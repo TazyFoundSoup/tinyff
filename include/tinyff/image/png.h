@@ -92,4 +92,10 @@ ff_result ff_encode_png(ff_ctx* ctx, ff_png_ctx *png_ctx, ff_stream *stream);
 
 ff_result ff_png_normalize(ff_ctx* ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_data, ff_flag consume);
 
+// Inline helpers
+
+static inline uint8[3] ff_png_getpixel(ff_png_ctx *png_ctx, uint32_t x, uint32_t y) {
+    // TODO: Implement
+}
+
 #endif
