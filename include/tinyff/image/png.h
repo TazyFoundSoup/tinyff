@@ -94,8 +94,11 @@ ff_result ff_png_normalize(ff_ctx* ctx, ff_png_ctx *png_ctx, ff_image_ctx **out_
 
 // Inline helpers
 
-static inline uint8[3] ff_png_getpixel(ff_png_ctx *png_ctx, uint32_t x, uint32_t y) {
-    // TODO: Implement
+/*
+ This actually returns a uint32_t in the structure of 1 byte for each channel (RGBA)
+*/
+static inline uint32_t ff_png_getpixel(ff_png_ctx *png_ctx, uint32_t x, uint32_t y) {
+    // Now I can impl
 }
 
 #endif
