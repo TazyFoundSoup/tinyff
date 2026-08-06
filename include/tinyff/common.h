@@ -9,36 +9,6 @@
 #include <tinyff/stream.h>
 #include <tinyff/compat.h>
 
-#ifdef USE_BENCH
-
-#include <tinyff/bench/bench.h>
-
-#define FF_BENCH_MARK(ctx, label) \
-    do { \
-        if (ctx) \
-            ff_bench_mark(&(ctx)->bench, (label)); \
-    } while (0)
-
-#define FF_BENCH_START(ctx, label) \
-    do { \
-        if (ctx) \
-            ff_bench_start(&(ctx)->bench, (label)); \
-    } while (0)
-
-#define FF_BENCH_END(ctx) \
-    do { \
-        if (ctx) \
-            ff_bench_end(&(ctx)->bench); \
-    } while (0)
-
-#else
-
-#define FF_BENCH_MARK(ctx, label) do {} while (0)
-#define FF_BENCH_START(ctx, label) do {} while (0)
-#define FF_BENCH_END(ctx) do {} while (0)
-
-#endif
-
 // Flags
 typedef bool ff_flag;
 
