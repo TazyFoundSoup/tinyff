@@ -5,4 +5,4 @@ used by contributers when understanding how everything behind the scenes work, b
 be read for fun if you want.
 
 [BYO* philosophy](byo.md): Our bring-your-own model for anything to make tinyff run on embeddable architecture and operating systems
-More coming soon...
+[Streams](streams.md): The data IO format for getting data in and out of tinyff

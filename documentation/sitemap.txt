@@ -2,3 +2,4 @@ index.md
 	starting_up.md
 	concepts.md
 		byo.md
+		streams.md
