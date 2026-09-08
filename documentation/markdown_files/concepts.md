@@ -1,4 +1,4 @@
-# tinyff concepts
+# Concepts
 
 The following pages explain some of the philosophy and ideas within tinyff. They should be
 used by contributers when understanding how everything behind the scenes work, but can also
