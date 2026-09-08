@@ -11,7 +11,7 @@ tests/logs/*
 # docs/book/
 # docs/book/*
 
-documentation/built_doc
+documentation/built_doc/
 
 # Coverage outputs
 coverage.info
