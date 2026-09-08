@@ -8,8 +8,10 @@ out/*
 tests/logs/*
 
 # Ignore generated book from mdbook
-docs/book/
-docs/book/*
+# docs/book/
+# docs/book/*
+
+documentation/built_doc
 
 # Coverage outputs
 coverage.info
@@ -21,3 +23,5 @@ compile_commands.json
 # Vim leftovers
 *.swp
 1
+
+hotdoc_env/

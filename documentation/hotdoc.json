@@ -1,0 +1,10 @@
+{
+    "project_name": "tinyff",
+    "project_version": "0.0.1",
+    "sitemap": "sitemap.txt",
+    "index": "markdown_files/index.md",
+    "output": "built_doc",
+    "extra_assets": [
+        "assets"
+    ]
+}

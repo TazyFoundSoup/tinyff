@@ -1,0 +1,11 @@
+# Licensing
+
+This documentation uses various external assets, licensed as follows:
+
+[anchor.min.js](https://github.com/bryanbraun/anchorjs) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
+[bootstrap](http://getbootstrap.com) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
+[jquery](https://jquery.com/) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
+[jquery.mCustomScrollbar](https://manos.malihu.gr/jquery-custom-content-scroller/) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
+[mustache](https://github.com/janl/mustache.js/) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
+[typeahead](https://github.com/twitter/typeahead.js) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
+[prism](https://prismjs.com/) is licensed under the [Massachusetts Institute of Technology (MIT)](https://opensource.org/licenses/MIT) license.
