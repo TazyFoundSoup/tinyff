@@ -1,4 +1,29 @@
-BasedOnStyle: Linux
-UseTab: Always
+BasedOnStyle: LLVM
+
 IndentWidth: 4
 TabWidth: 4
+UseTab: Never
+
+BreakBeforeBraces: Attach
+AllowShortIfStatementsOnASingleLine: WithoutElse
+AllowShortLoopsOnASingleLine: true
+
+PointerAlignment: Right
+
+ColumnLimit: 100
+AlignAfterOpenBracket: Align
+BinPackArguments: false
+BinPackParameters: false
+
+BreakBeforeBinaryOperators: None
+
+SpaceBeforeParens: ControlStatements
+SpaceBeforeAssignmentOperators: true
+
+IndentCaseLabels: false
+IndentGotoLabels: true
+
+DerivePointerAlignment: false
+
+IncludeBlocks: Preserve
+SortIncludes: Never
