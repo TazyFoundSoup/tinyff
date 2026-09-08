@@ -3,6 +3,7 @@
 
 
 build/*
+*.a
 out/*
 .cache/*
 tests/logs/*
