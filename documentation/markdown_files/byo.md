@@ -10,3 +10,4 @@ to use standard stdlib functions instead of setting up an adapter which already 
 
 > We would put a code example here, but tinyff just had to be rewritten recently because watson
 had a breakdown and got angry
+
