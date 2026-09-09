@@ -3,3 +3,4 @@ index.md
 	concepts.md
 		byo.md
 		streams.md
+	contributing.md
