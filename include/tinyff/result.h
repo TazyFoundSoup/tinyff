@@ -3,13 +3,10 @@
 
 #include <stdbool.h>
 
-typedef enum {
-    FF_TRUE = true,
-    FF_FALSE = false
-} FF_FLAG;
+typedef enum { FF_TRUE = true, FF_FALSE = false } FF_FLAG;
 
 typedef enum {
-    // -- SUCCESS -- 
+    // -- SUCCESS --
     FF_RESULT_OK = 0,
 
     // -- WARNINGS --
@@ -21,16 +18,16 @@ typedef enum {
     // File
     FF_RESULT_ERROR_INVALID_FILE,
     FF_RESULT_ERROR_READ_FILE_FAILURE,
-    
+
     // Generic
     FF_RESULT_ERROR_OUT_OF_BOUNDS,
     FF_RESULT_ERROR_NULL_PTR,
 
     // Media specific
-    
+
     // PNG
     FF_RESULT_ERROR_INVALID_PNG_SIGNATURE,
-    
+
     // BMP
     FF_RESULT_ERROR_INVALID_BMP_SIGNATURE,
     FF_RESULT_ERROR_INVALID_BMP_HEADER,

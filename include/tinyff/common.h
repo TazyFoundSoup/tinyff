@@ -12,44 +12,37 @@
 // Flags
 typedef bool ff_flag;
 
-#define FF_ENABLE   true
-#define FF_DISABLE  false
+#define FF_ENABLE true
+#define FF_DISABLE false
 
 // Functions
 
 static inline uint32_t ff_be32(const uint8_t *b) {
-    return ((uint32_t)b[0] << 24) |
-           ((uint32_t)b[1] << 16) |
-           ((uint32_t)b[2] << 8)  |
+    return ((uint32_t)b[0] << 24) | ((uint32_t)b[1] << 16) | ((uint32_t)b[2] << 8) |
            ((uint32_t)b[3]);
 }
 
 static inline uint32_t ff_le32(const uint8_t *b) {
-    return ((uint32_t)b[0])       |
-           ((uint32_t)b[1] << 8)  |
-           ((uint32_t)b[2] << 16) |
+    return ((uint32_t)b[0]) | ((uint32_t)b[1] << 8) | ((uint32_t)b[2] << 16) |
            ((uint32_t)b[3] << 24);
 }
 
-static inline void ff_write_be32(uint8_t *out, uint32_t v)
-{
+static inline void ff_write_be32(uint8_t *out, uint32_t v) {
     out[0] = (v >> 24) & 0xFF;
     out[1] = (v >> 16) & 0xFF;
-    out[2] = (v >> 8)  & 0xFF;
-    out[3] = (v)       & 0xFF;
+    out[2] = (v >> 8) & 0xFF;
+    out[3] = (v) & 0xFF;
 }
 
-static inline void ff_write_le32(uint8_t *out, uint32_t v)
-{
-    out[0] = (v)        & 0xFF;
-    out[1] = (v >> 8)   & 0xFF;
-    out[2] = (v >> 16)  & 0xFF;
-    out[3] = (v >> 24)  & 0xFF;
+static inline void ff_write_le32(uint8_t *out, uint32_t v) {
+    out[0] = (v) & 0xFF;
+    out[1] = (v >> 8) & 0xFF;
+    out[2] = (v >> 16) & 0xFF;
+    out[3] = (v >> 24) & 0xFF;
 }
 
 // Small stdlib helper functions
-static inline size_t ff_strlen(const char *str)
-{
+static inline size_t ff_strlen(const char *str) {
     size_t len = 0;
     while (str[len] != '\0') {
         len++;
@@ -57,8 +50,7 @@ static inline size_t ff_strlen(const char *str)
     return len;
 }
 
-static inline int ff_memcmp(const void *a, const void *b, size_t n)
-{
+static inline int ff_memcmp(const void *a, const void *b, size_t n) {
     const uint8_t *pa = (const uint8_t *)a;
     const uint8_t *pb = (const uint8_t *)b;
     for (size_t i = 0; i < n; i++) {
@@ -67,8 +59,7 @@ static inline int ff_memcmp(const void *a, const void *b, size_t n)
     return 0;
 }
 
-static inline void ff_memcpy(void *dest, const void *src, size_t n)
-{
+static inline void ff_memcpy(void *dest, const void *src, size_t n) {
     uint8_t *pd = (uint8_t *)dest;
     const uint8_t *ps = (const uint8_t *)src;
     for (size_t i = 0; i < n; i++) {
@@ -88,25 +79,25 @@ static inline void *ff_memset(void *dest, int ch, size_t count) {
 // Default
 
 typedef struct {
-    void* (*ff_alloc)(size_t size);
-    void  (*ff_free)(void* ptr);
-    void* (*ff_calloc)(size_t count, size_t size);
+    void *(*ff_alloc)(size_t size);
+    void (*ff_free)(void *ptr);
+    void *(*ff_calloc)(size_t count, size_t size);
 } ff_allocator;
 
 typedef struct ff_ctx {
     // Debug settings
     ff_stream ff_debug_stream;
     ff_flag ff_debug_enabled;
-    
+
     // Allocation
     ff_allocator allocator;
-    
-    #ifdef USE_BENCH
+
+#ifdef USE_BENCH
     ff_bench bench;
-    #endif
+#endif
 } ff_ctx;
 
-ff_ctx* ff_init(ff_allocator* allocator);
-void ff_cleanup(ff_ctx* ctx);
+ff_ctx *ff_init(ff_allocator *allocator);
+void ff_cleanup(ff_ctx *ctx);
 
 #endif

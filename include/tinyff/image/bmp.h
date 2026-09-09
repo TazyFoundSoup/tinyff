@@ -4,8 +4,8 @@
 #include "../common.h"
 
 typedef struct {
-  FF_BASE,
-  
+    FF_BASE,
+
 } bmp_ctx_t
 
 #endif // !BMP_H_
