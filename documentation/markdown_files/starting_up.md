@@ -15,3 +15,5 @@ Eventually, there will be SHA256 if you want however not yet. Then you just have
 ```bash
 make
 ```
+> TIP: It is recomended that before you start coding, you read through the [concepts](concepts.md) before beginning
+your programming on the next chapter
