@@ -10,4 +10,7 @@ tinyff currently, and in the future is aimed to feature:
 - completely blind of any type of data, so you can send in files, network requests, even serial ports
 - c99 compatible
 
- 
+## Community
+
+Join the tinyff matrix chat to discuss development, ask questions and submit patches
+[Join the Matrix →](https://matrix.to/#/#tinyff:matrix.org)
