@@ -4,6 +4,7 @@
 
 build/*
 *.a
+*.o
 out/*
 .cache/*
 tests/logs/*
