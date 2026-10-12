@@ -79,25 +79,21 @@ static inline void *ff_memset(void *dest, int ch, size_t count) {
 // Default
 
 typedef struct {
-    void *(*ff_alloc)(size_t size);
-    void (*ff_free)(void *ptr);
-    void *(*ff_calloc)(size_t count, size_t size);
-} ff_allocator;
+    void *buffer;
+    size_t capacity;
+    size_t offset;
+} ff_arena;
 
 typedef struct ff_ctx {
     // Debug settings
-    ff_stream ff_debug_stream;
-    ff_flag ff_debug_enabled;
+    // NOTE: To be added later
+    //ff_stream ff_debug_stream;
+    //ff_flag ff_debug_enabled;
 
-    // Allocation
-    ff_allocator allocator;
-
-#ifdef USE_BENCH
-    ff_bench bench;
-#endif
+    ff_arena arena;
 } ff_ctx;
 
-ff_ctx *ff_init(ff_allocator *allocator);
+ff_ctx *ff_init(void *buffer, size_t capacity);
 void ff_cleanup(ff_ctx *ctx);
 
 #endif
