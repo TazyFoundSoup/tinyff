@@ -1,20 +1,19 @@
+#include "tinyff/result.h"
 #include <tinyff/stream.h>
 #include <tinyff/common.h>
 
-// Initializes a new tinyff context.
-ff_ctx *ff_init(ff_allocator *allocator) {
-    if (!allocator) return NULL;
+ff_result ff_init(ff_ctx *ctx, void *buffer, size_t capacity) {
+    if (!ctx || !buffer) return FF_RESULT_BAD;
+    
+    ctx->arena.buffer = (uint8_t *)buffer;
+    ctx->arena.capacity = capacity;
+    ctx->arena.offset = 0;
 
-    ff_ctx *ctx = allocator->ff_alloc(sizeof(ff_ctx));
-
-    if (!ctx) return NULL;
-
-    ctx->allocator = *allocator;
-
-    return ctx;
+    return FF_RESULT_OK;
 }
 
-void ff_cleanup(ff_ctx *ctx) {
-    if (!ctx) return;
-    ctx->allocator.ff_free(ctx);
+ff_result ff_cleanup(ff_ctx *ctx) {
+    if (!ctx) return FF_RESULT_BAD;
+    (void)ctx;
+    return FF_RESULT_OK;
 }

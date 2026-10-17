@@ -8,6 +8,7 @@
 #include <stddef.h>
 #include <tinyff/stream.h>
 #include <tinyff/compat.h>
+#include <tinyff/result.h>
 
 // Flags
 typedef bool ff_flag;
@@ -79,7 +80,7 @@ static inline void *ff_memset(void *dest, int ch, size_t count) {
 // Default
 
 typedef struct {
-    void *buffer;
+    uint8_t *buffer;
     size_t capacity;
     size_t offset;
 } ff_arena;
@@ -93,7 +94,7 @@ typedef struct ff_ctx {
     ff_arena arena;
 } ff_ctx;
 
-ff_ctx *ff_init(void *buffer, size_t capacity);
-void ff_cleanup(ff_ctx *ctx);
+ff_result ff_init(ff_ctx* ctx, void *buffer, size_t capacity);
+ff_result ff_cleanup(ff_ctx *ctx);
 
 #endif
