@@ -15,6 +15,8 @@ typedef enum {
 
     // -- ERRORS --
 
+    FF_RESULT_BAD, // Failed NULL check
+    
     // File
     FF_RESULT_ERROR_INVALID_FILE,
     FF_RESULT_ERROR_READ_FILE_FAILURE,
