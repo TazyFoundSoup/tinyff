@@ -17,3 +17,16 @@ ff_result ff_cleanup(ff_ctx *ctx) {
     (void)ctx;
     return FF_RESULT_OK;
 }
+
+ff_result ff_alloc(ff_ctx *ctx, size_t size, void **buffer) {
+    if (!ctx || size <= 0 || !buffer) return FF_RESULT_BAD;
+
+    // TODO: implement
+    
+    return FF_RESULT_WARN_NO_IMPL;
+}
+
+ff_result ff_reset(ff_ctx *ctx) {
+    ctx->arena.offset = 0;
+    return FF_RESULT_OK;
+}

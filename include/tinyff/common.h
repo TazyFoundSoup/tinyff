@@ -76,9 +76,6 @@ static inline void *ff_memset(void *dest, int ch, size_t count) {
     return dest;
 }
 
-// Context bases
-// Default
-
 typedef struct {
     uint8_t *buffer;
     size_t capacity;
@@ -96,5 +93,9 @@ typedef struct ff_ctx {
 
 ff_result ff_init(ff_ctx* ctx, void *buffer, size_t capacity);
 ff_result ff_cleanup(ff_ctx *ctx);
+
+// WARNING: This should only be used for uint8_t types because I don't want to handle alignment
+ff_result ff_alloc(ff_ctx *ctx, size_t size, void **buffer);
+ff_result ff_reset(ff_ctx *ctx);
 
 #endif
