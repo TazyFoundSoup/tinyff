@@ -27,6 +27,7 @@ ff_result ff_alloc(ff_ctx *ctx, size_t size, void **buffer) {
 }
 
 ff_result ff_reset(ff_ctx *ctx) {
+    if (!ctx) return FF_RESULT_BAD;
     ctx->arena.offset = 0;
     return FF_RESULT_OK;
 }
